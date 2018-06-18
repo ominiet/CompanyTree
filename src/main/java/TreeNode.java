@@ -1,0 +1,53 @@
+import java.util.ArrayList;
+
+public class TreeNode {
+        private String companyName;
+        private int id;
+        private int parentId;
+        private ArrayList<TreeNode> children;
+
+        TreeNode() {
+            this.companyName = "unset";
+            this.id = 0000;
+            this.children = new ArrayList<TreeNode>();
+        }
+        TreeNode(String id, String name, String parentId){
+            this.companyName = name;
+            this.children = new ArrayList<TreeNode>();
+            try {
+                this.id = Integer.parseInt(id);
+            } catch (NumberFormatException nfe){
+                this.id = 0;
+            }
+            try{
+                this.parentId = Integer.parseInt(parentId);
+            } catch (NumberFormatException nfe){
+                this.parentId = 0;
+            }
+        }
+        public void printNode(){
+            System.out.println(id + ": " + companyName);
+        }
+        public String getName(){
+            return companyName;
+        }
+        public ArrayList<TreeNode> getChildren() {
+            return children;
+        }
+        public int getId(){
+            return id;
+        }
+        public int getParentId() {
+            return parentId;
+        }
+        public void setId(int id){
+            this.id=id;
+        }
+        public void setParentId(int pid){
+            this.parentId=pid;
+        }
+        public void setName(String name){
+            this.companyName=name;
+        }
+
+}
