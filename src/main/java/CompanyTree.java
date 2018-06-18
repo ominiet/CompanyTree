@@ -1,35 +1,28 @@
+import javax.xml.soap.Node;
+import java.io.IOException;
 import java.util.ArrayList;
 
-class Node{
-    String companyName;
-    int id;
-    ArrayList<Node> children;
-
-    Node(){
-        this.companyName="unset";
-        this.id=0000;
-        this.children= new ArrayList<Node>();
-    }
-}
 public class CompanyTree {
 
-    void printTree(Node root){
+    void printTree(Node root) {
 
-        for(Node a: root.children){
-            
+
+
+    }
+
+    public static void main(String[] args) {
+        CompanyReader reader;
+        try {
+            ArrayList<TreeNode> myTree;
+            reader = new CompanyReader("./CSV/onebeacon_ambest.csv",true);
+            myTree = reader.getCompanies();
+            for (TreeNode n: myTree) {
+                System.out.println(n.getName());
+            }
+        } catch (IOException e){
+            e.printStackTrace();
         }
 
     }
-
-public static void main(String [] args){
-    Node a = new Node();
-    Node b = new Node();
-
-    b.companyName = "alex";
-    a.companyName="Chris";
-    a.children.add(b);
-
-
-}
 
 }
