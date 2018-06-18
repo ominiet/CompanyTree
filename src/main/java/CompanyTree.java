@@ -53,6 +53,27 @@ TreeNode root;
 
         return false;
     }
+    public void printRecursive(){
+        printRecursive(root, 0);
+    }
+
+    private void printRecursive(TreeNode node, int depth){
+        int temp = depth;
+        while(temp > 0){
+
+            if(temp == 1) System.out.print("|-");
+            else System.out.print("|");
+
+            System.out.print("\t");
+            temp --;
+        }
+        System.out.println(node.getName());
+        depth ++;
+        for(TreeNode child : node.getChildren()){
+
+            printRecursive(child, depth);
+        }
+    }
     void printTree() {
 
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
