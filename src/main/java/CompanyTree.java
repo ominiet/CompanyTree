@@ -1,5 +1,4 @@
 
-import javax.xml.soap.Node;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.io.PrintWriter;
@@ -8,32 +7,22 @@ import java.util.Queue;
 
 public class CompanyTree {
   
-Node root;
+TreeNode root;
 
-    CompanyTree(Node start){
+
+    CompanyTree(){
+        this.root=null;
+    }
+
+    CompanyTree(TreeNode start){
 
         this.root=start;
     }
-   
-    public static void main(String[] args) {
-        CompanyReader reader;
-        try {
-            ArrayList<TreeNode> myTree;
-            reader = new CompanyReader("./CSV/onebeacon_ambest.csv",true);
-            myTree = reader.getCompanies();
-            for (TreeNode n: myTree) {
-                System.out.println(n.getName());
-            }
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
-    }
 
 
-    boolean addNode(Node find){
+    boolean addNode(TreeNode find){
 
-        Queue<Node> queue = new LinkedList<Node>();
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
 
         queue.add(root);
         while(true){
@@ -44,28 +33,29 @@ Node root;
             }
 
             while(nodeCount>0){
-                Node node = queue.peek();
-                //System.out.print(node.companyName + " ");
+                TreeNode node = queue.peek();
+              //  System.out.print(node.getName() + " ");
 
-                if (node.id==find.parentId){
-                    node.children.add(find);
+
+                if (node.getId()==find.getParentId()){
+                    node.getChildren().add(find);
                     return true;
                 }
-                if(node.id!=find.id)
+                if(node.getId()!=find.getId())
                 queue.remove();
-                for (Node child: node.children) {
+                for (TreeNode child: node.getChildren()) {
                     queue.add(child);
                 }
                 nodeCount--;
             }
-            System.out.println();
+           // System.out.println();
         }
 
         return false;
     }
     void printTree() {
 
-        Queue<Node> queue = new LinkedList<Node>();
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
 
         queue.add(root);
         while(true){
@@ -76,10 +66,10 @@ Node root;
             }
 
             while(nodeCount>0){
-                Node node = queue.peek();
-                System.out.print(node.companyName + " ");
+                TreeNode node = queue.peek();
+                System.out.print(node.getName() + " ");
                 queue.remove();
-                for (Node child: node.children) {
+                for (TreeNode child: node.getChildren() ) {
                     queue.add(child);
                 }
                 nodeCount--;

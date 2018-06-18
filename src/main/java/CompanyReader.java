@@ -16,10 +16,16 @@ class CompanyReader {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
             reader.readLine();
+            int count=0;
             while((line = reader.readLine()) != null){
                 //System.out.println(line);
+
                 String[] lineParts = line.split(",");
                 if(AMBest){
+                   // System.out.print(lineParts[3]+ "  ");
+                   // System.out.print(lineParts[7] + "  ");
+                  //  System.out.println(lineParts[9]);
+
                     comps.add(new TreeNode(lineParts[3],lineParts[7],lineParts[9]));
                 }
                 else{
