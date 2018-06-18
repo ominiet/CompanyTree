@@ -16,10 +16,13 @@ public class TreeNode {
             this.children = new ArrayList<TreeNode>();
             try {
                 this.id = Integer.parseInt(id);
-                this.parentId= Integer.parseInt(parentId);
             } catch (NumberFormatException nfe){
                 this.id = 0;
-                this.parentId=0;
+            }
+            try{
+                this.parentId = Integer.parseInt(parentId);
+            } catch (NumberFormatException nfe){
+                this.parentId = 0;
             }
         }
         public void printNode(){
@@ -28,9 +31,15 @@ public class TreeNode {
         public String getName(){
             return companyName;
         }
-        public ArrayList<TreeNode> getChildren() {return children;}
-        public int getId(){ return id;}
-        public int getParentId() {return parentId;}
+        public ArrayList<TreeNode> getChildren() {
+            return children;
+        }
+        public int getId(){
+            return id;
+        }
+        public int getParentId() {
+            return parentId;
+        }
         public void setId(int id){
             this.id=id;
         }
