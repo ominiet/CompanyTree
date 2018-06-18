@@ -29,7 +29,7 @@ public class driver {
 
         ex.addNode(d);
        // ex.addNode(a);
-        ex.printTree();
+//        ex.printTree();
 
         CompanyReader reader;
         try {
@@ -39,7 +39,7 @@ public class driver {
 
             for (TreeNode q : myTree
                     ) {
-                System.out.println(q.getId() + "    " + q.getName() + "  " + q.getParentId());
+                //System.out.println(q.getId() + "    " + q.getName() + "  " + q.getParentId());
 
             }
 
@@ -53,8 +53,8 @@ public class driver {
                 //    System.out.println(cur.getName());
                 if (cur.getId() == cur.getParentId()) {
                     tree = new CompanyTree(cur);
-                    System.out.println("HERE");
-                    System.out.println(cur.getId() + "    " + cur.getName() + "  " + cur.getParentId());
+                    //System.out.println("HERE");
+                    //System.out.println(cur.getId() + "    " + cur.getName() + "  " + cur.getParentId());
 
 
                 }
@@ -67,7 +67,7 @@ public class driver {
                     tree.addNode(here);
             }
 
-            tree.printTree();
+            tree.printRecursive();
 
         } catch (IOException e){
             e.printStackTrace();
