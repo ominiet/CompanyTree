@@ -1,14 +1,33 @@
+
+import javax.xml.soap.Node;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class CompanyTree {
-
-    Node root;
+  
+Node root;
 
     CompanyTree(Node start){
 
         this.root=start;
+    }
+   
+    public static void main(String[] args) {
+        CompanyReader reader;
+        try {
+            ArrayList<TreeNode> myTree;
+            reader = new CompanyReader("./CSV/onebeacon_ambest.csv",true);
+            myTree = reader.getCompanies();
+            for (TreeNode n: myTree) {
+                System.out.println(n.getName());
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -69,7 +88,7 @@ public class CompanyTree {
         }
 
     }
-
+}
 //    void printTreeStruct() {
 //
 //        try {
@@ -104,7 +123,7 @@ public class CompanyTree {
 //
 //    }
 
-}
+
 
 
 
