@@ -31,6 +31,14 @@ public class TreeNode {
         public ArrayList<TreeNode> getChildren() {return children;}
         public int getId(){ return id;}
         public int getParentId() {return parentId;}
-
+        public void setId(int id){
+            this.id=id;
+        }
+        public void setParentId(int pid){
+            this.parentId=pid;
+        }
+        public void setName(String name){
+            this.companyName=name;
+        }
 
 }
