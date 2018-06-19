@@ -64,6 +64,7 @@ public class driver {
 
 
         tree.BuildTree(nodes);
+        tree.reorderChildren();
         System.out.println("line");
         tree.printRecursive();
 
