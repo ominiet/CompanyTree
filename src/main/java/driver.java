@@ -16,7 +16,7 @@ public class driver {
         try {
             conn =
                     DriverManager.getConnection("jdbc:mysql://localhost:3306/masterdb",
-                            "root","velroth107");
+                            "#","#");
 
             // Do something with the Connection
             Statement statement = conn.createStatement();
@@ -33,11 +33,7 @@ public class driver {
                 nodes.add(temp);
 
                 if (top_level == 0) {
-                    System.out.println("I AM GROOT");
                     tree = new CompanyTree(temp);
-                }
-                else {
-                    //System.out.println(top_level + ", " + id);
                 }
               //  System.out.println(temp.getId() + ", " + temp.getName() +
                        // ", " + temp.getParentId());
@@ -54,7 +50,7 @@ public class driver {
 
 
 
-
+// Old functionality
 //        CompanyReader reader;
 //        try {
 //            ArrayList<TreeNode> myTree;
@@ -73,11 +69,6 @@ public class driver {
 
 
             tree.BuildTree(nodes);
-
-//            for (TreeNode currentNode : myTree){
-//                    if(currentNode!=tree.getRoot())
-//                    tree.addNode(currentNode);
-//            }
 
             tree.printRecursive();
 
