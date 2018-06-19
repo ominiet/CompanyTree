@@ -4,8 +4,9 @@ import java.util.*;
 public class CompanyTree {
   
     private TreeNode root;
-    private ArrayList<TreeNode> unsorted;
 
+    private ArrayList<TreeNode> unsorted;
+    private ArrayList<String> companyNames;
 
     CompanyTree(){
         this.root=null;
@@ -15,6 +16,12 @@ public class CompanyTree {
     CompanyTree(TreeNode start){
         this.root=start;
         this.unsorted = new ArrayList<>();
+        this.companyNames = new ArrayList<>();
+    }
+
+
+    public ArrayList<String> getCompanyNames() {
+        return companyNames;
     }
 
     void BuildTree(ArrayList<TreeNode> nodeList){
@@ -23,11 +30,13 @@ public class CompanyTree {
         for (TreeNode childNode : nodeList){
             placed = false;
             for (TreeNode parentNode : nodeList){
-                if (childNode == getRoot()) break;
+                if (childNode == getRoot()) {this.companyNames.add(childNode.getName()); break;}
                 if(childNode.getParentId() != childNode.getId()) {
                     if (childNode.getParentId() == parentNode.getId()) {
                         parentNode.getChildren().add(childNode);
+                        this.companyNames.add(childNode.getName());
                         placed = true;
+
                     }
                 }
                 else {
@@ -50,6 +59,7 @@ public class CompanyTree {
             }
         }
         Collections.sort(unsorted, new NameComparator());
+        Collections.sort(this.getCompanyNames());
     }
     TreeNode getRoot(){
         return root;
