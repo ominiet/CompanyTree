@@ -14,9 +14,12 @@ public class driver {
         int top_level = 0;
 
         ArrayList<TreeNode> nodes = new ArrayList<TreeNode>();
+        ArrayList<TreeNode> nodes2 = new ArrayList<TreeNode>();
+
         Connection conn = null;
 
         CompanyTree tree = null;
+        CompanyTree tree2 = null;
 
         Properties prop = new Properties();
         InputStream input = null;
@@ -31,8 +34,9 @@ public class driver {
             // Do something with the Connection
             Statement statement = conn.createStatement();
             String query = "select id,name,parent_company_id,top_level_company_id from dom_company where top_level_company_id=3089 OR id=3089;";
-
             ResultSet result = statement.executeQuery(query);
+
+            //For first Tree
             while (result.next()) {
                 int id = result.getInt("id");
                 String name = result.getString("name");
@@ -44,6 +48,26 @@ public class driver {
 
                 if (top_level == 0) {
                     tree = new CompanyTree(temp);
+                }
+
+            }
+
+
+            String query2 = "select amb_id as id, name, parent_amb_id as parent_company_id , ultimate_parent_amb_id as top_level_company_id from dom_am_best_carrier where ultimate_parent_amb_id=51160 OR amb_id=51160;";
+            ResultSet result2 = statement.executeQuery(query2);
+
+            while (result2.next()) {
+                int id = result2.getInt("id");
+                String name = result2.getString("name");
+                int parentId = result2.getInt("parent_company_id");
+                top_level = result2.getInt("top_level_company_id");
+
+
+                TreeNode temp = new TreeNode(id, name, parentId);
+                nodes2.add(temp);
+
+                if (top_level == id) {
+                    tree2 = new CompanyTree(temp);
                 }
 
             }
@@ -65,9 +89,15 @@ public class driver {
 
         tree.BuildTree(nodes);
         tree.reorderChildren();
-        System.out.println("line");
+      
+        tree2.BuildTree(nodes2);
+        tree2.reorderChildren();
+
         tree.printRecursive();
 
+        System.out.println();
+
+        tree2.printRecursive();
 
         System.exit(0);
     }

@@ -23,7 +23,7 @@ public class CompanyTree {
         for (TreeNode childNode : nodeList){
             placed = false;
             for (TreeNode parentNode : nodeList){
-                if (childNode == getRoot()) break;
+                if (childNode == getRoot()) {System.out.println("ITs my BIRTHday");break;}
                 if(childNode.getParentId() != childNode.getId()) {
                     if (childNode.getParentId() == parentNode.getId()) {
                         parentNode.getChildren().add(childNode);
@@ -36,8 +36,10 @@ public class CompanyTree {
                 }
             }
             if (!placed){
-                System.out.println(root.getName());
-                if( childNode.getParentId() == java.sql.Types.NULL && childNode != root){
+            //   System.out.println(root.getParentId());
+            //   System.out.println(childNode.getName());
+
+                if( childNode.getParentId() != 0 && childNode!= root){
                     System.out.println(childNode.getParentId());
                     System.out.println(childNode.getId());
                     System.out.println(childNode.getName());
