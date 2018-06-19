@@ -1,45 +1,61 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Properties;
 
 
 public class driver {
 
-    public static void main(String [] args){
+    public static void main(String[] args) {
 
-    int top_level=0;
+        int top_level = 0;
 
-        ArrayList<TreeNode> nodes=new ArrayList<TreeNode>();
+        ArrayList<TreeNode> nodes = new ArrayList<TreeNode>();
         Connection conn = null;
 
-        CompanyTree tree = new CompanyTree();
+        CompanyTree tree = null;
+
+        Properties prop = new Properties();
+        InputStream input = null;
         try {
+            input = new FileInputStream("./Props/config.properties");
+            prop.load(input);
+
             conn =
                     DriverManager.getConnection("jdbc:mysql://localhost:3306/masterdb",
-                            "#","#");
+                            prop.getProperty("username"), prop.getProperty("password"));
 
             // Do something with the Connection
             Statement statement = conn.createStatement();
-            String query  = "select id,name,parent_company_id,top_level_company_id from dom_company where top_level_company_id=3089 OR id=3089;";
+            String query = "select id,name,parent_company_id,top_level_company_id from dom_company where top_level_company_id=3089 OR id=3089;";
 
-           ResultSet result = statement.executeQuery(query);
-            while (result.next()){
+            ResultSet result = statement.executeQuery(query);
+            while (result.next()) {
                 int id = result.getInt("id");
                 String name = result.getString("name");
                 int parentId = result.getInt("parent_company_id");
                 top_level = result.getInt("top_level_company_id");
 
-                 TreeNode temp = new TreeNode(id,name,parentId);
+                TreeNode temp = new TreeNode(id, name, parentId);
                 nodes.add(temp);
 
                 if (top_level == 0) {
                     tree = new CompanyTree(temp);
                 }
-              //  System.out.println(temp.getId() + ", " + temp.getName() +
-                       // ", " + temp.getParentId());
+
             }
 
-        } catch(NumberFormatException e){e.printStackTrace();}catch (SQLException ex) {
+        } catch (FileNotFoundException fnf){
+            fnf.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.out.println();
+            e.printStackTrace();
+        } catch (SQLException ex) {
             // handle any errors
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
@@ -47,32 +63,11 @@ public class driver {
         }
 
 
+        tree.BuildTree(nodes);
+        System.out.println("line");
+        tree.printRecursive();
 
 
-
-// Old functionality
-//        CompanyReader reader;
-//        try {
-//            ArrayList<TreeNode> myTree;
-//            reader = new CompanyReader("./CSV/onebeacon_ambest.csv",true);
-//            myTree = reader.getCompanies();
-//
-//            CompanyTree tree = new CompanyTree();
-//
-//            //This is to get the first Root TreeNode
-//            for (int i =0; i< myTree.size();i++) {
-//
-//                TreeNode cur = myTree.get(i);
-//                if(cur.getId() == reader.getUltimateParent())
-//                    tree = new CompanyTree(cur);
-//            }
-
-
-            tree.BuildTree(nodes);
-
-            tree.printRecursive();
-
-
-     System.exit(0);
+        System.exit(0);
     }
 }
