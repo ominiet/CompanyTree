@@ -11,19 +11,12 @@ public class TreeNode {
             this.id = 0000;
             this.children = new ArrayList<TreeNode>();
         }
-        TreeNode(String id, String name, String parentId){
+        TreeNode(int id, String name, int parentId){
             this.companyName = name;
             this.children = new ArrayList<TreeNode>();
-            try {
-                this.id = Integer.parseInt(id);
-            } catch (NumberFormatException nfe){
-                this.id = 0;
-            }
-            try{
-                this.parentId = Integer.parseInt(parentId);
-            } catch (NumberFormatException nfe){
-                this.parentId = 0;
-            }
+            this.id = id;
+            this.parentId =parentId;
+
         }
         public void printNode(){
             System.out.println(id + ": " + companyName);
