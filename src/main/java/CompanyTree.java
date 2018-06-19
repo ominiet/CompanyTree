@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 
 public class CompanyTree {
@@ -51,6 +49,7 @@ public class CompanyTree {
                 //else unsorted.add(childNode);
             }
         }
+        Collections.sort(unsorted, new NameComparator());
     }
     TreeNode getRoot(){
         return root;
@@ -120,7 +119,27 @@ public class CompanyTree {
             printRecursive(child, depth);
         }
     }
+    void reorderChildren(){
+        reorderChildren(this.root);
 
+    }
+    private void reorderChildren(TreeNode node){
+        Collections.sort(node.getChildren(), new NameComparator());
+        for(TreeNode child : node.getChildren()){
+
+            reorderChildren(child);
+        }
+
+    }
+
+}
+
+//Allows children and unsorted ArrayLists to be ordered lexically
+class NameComparator implements Comparator<TreeNode> {
+
+    public int compare(TreeNode o1, TreeNode o2){
+        return o1.getName().compareToIgnoreCase(o2.getName());
+    }
 }
 
 

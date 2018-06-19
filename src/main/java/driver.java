@@ -88,8 +88,10 @@ public class driver {
 
 
         tree.BuildTree(nodes);
-
+        tree.reorderChildren();
+      
         tree2.BuildTree(nodes2);
+        tree2.reorderChildren();
 
         tree.printRecursive();
 
