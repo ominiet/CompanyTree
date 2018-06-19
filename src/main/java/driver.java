@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -44,6 +46,48 @@ public class driver {
         return tree1;
     }
 
+    static ArrayList<List<String>> uniqueNodes(CompanyTree first, CompanyTree second){
+
+
+        Collection<String> fList = first.getCompanyNames();
+        Collection<String> sList = second.getCompanyNames();
+        List<String> source = first.getCompanyNames();
+        List<String> destination = second.getCompanyNames();
+
+        source.removeAll(sList);
+        destination.removeAll(fList);
+
+        System.out.println();
+
+
+
+        String format = "%1$-100s%2$-100s\n";
+        System.out.format(format,"First Tree","Second Tree");
+        for( int i=0;i<source.size()-1 || i< destination.size()-1;i++) {
+
+
+
+            if (i > source.size()-1 && destination.size()-1<=i) {
+                String two = destination.get(i);
+                System.out.format(format,' ',two);
+            }
+            else if (i < source.size()-1 && i >= destination.size()-1) {
+                String one = source.get(i);
+                System.out.format(format,one,' ');
+            } else {
+                System.out.format(format,source.get(i),destination.get(i));
+            }
+        }
+
+        ArrayList<List<String>> result = new ArrayList<List<String>>();
+        result.add(source);
+        result.add(destination);
+
+        System.out.format(format,source.size(),destination.size());
+
+        return result;
+
+    }
     public static void main(String[] args) {
 
         int top_level = 0;
@@ -73,7 +117,7 @@ public class driver {
             String query3= "select amb_id as id, name, parent_amb_id as parent_company_id , ultimate_parent_amb_id as top_level_company_id from dom_am_best_carrier where ultimate_parent_amb_id=58167 OR amb_id=58167;";
 
             tree = populateFromDatabase(statement,query);
-            tree2= populateFromDatabase(statement,query2);
+            tree2 = populateFromDatabase(statement,query2);
 
 
         } catch (FileNotFoundException fnf){
@@ -101,6 +145,8 @@ public class driver {
 
         tree2.printRecursive();
 
+
+        uniqueNodes(tree,tree2);
         System.exit(0);
     }
 }
