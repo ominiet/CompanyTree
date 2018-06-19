@@ -9,6 +9,41 @@ import java.util.Properties;
 
 public class driver {
 
+    static CompanyTree  populateFromDatabase(Statement statement, String query){
+
+        int top_level = 0;
+        ArrayList<TreeNode> nodes = new ArrayList<TreeNode>();
+        CompanyTree tree1 = null;
+
+        try{
+            ResultSet result = statement.executeQuery(query);
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                int parentId = result.getInt("parent_company_id");
+                top_level = result.getInt("top_level_company_id");
+
+                if ( top_level == 0){
+                    top_level=id;
+                }
+                TreeNode temp = new TreeNode(id, name, parentId);
+                nodes.add(temp);
+
+                if (top_level == id) {
+                    tree1 = new CompanyTree(temp);
+                }
+
+            }
+
+
+        }
+        catch(Exception e ){
+            e.printStackTrace();
+        }
+        tree1.BuildTree(nodes);
+        return tree1;
+    }
+
     public static void main(String[] args) {
 
         int top_level = 0;
@@ -33,44 +68,13 @@ public class driver {
 
             // Do something with the Connection
             Statement statement = conn.createStatement();
-            String query = "select id,name,parent_company_id,top_level_company_id from dom_company where top_level_company_id=3089 OR id=3089;";
-            ResultSet result = statement.executeQuery(query);
-
-            //For first Tree
-            while (result.next()) {
-                int id = result.getInt("id");
-                String name = result.getString("name");
-                int parentId = result.getInt("parent_company_id");
-                top_level = result.getInt("top_level_company_id");
-
-                TreeNode temp = new TreeNode(id, name, parentId);
-                nodes.add(temp);
-
-                if (top_level == 0) {
-                    tree = new CompanyTree(temp);
-                }
-
-            }
-
-
+             String query = "select id,name,parent_company_id,top_level_company_id from dom_company where top_level_company_id=3089 OR id=3089;";
             String query2 = "select amb_id as id, name, parent_amb_id as parent_company_id , ultimate_parent_amb_id as top_level_company_id from dom_am_best_carrier where ultimate_parent_amb_id=51160 OR amb_id=51160;";
-            ResultSet result2 = statement.executeQuery(query2);
+            String query3= "select amb_id as id, name, parent_amb_id as parent_company_id , ultimate_parent_amb_id as top_level_company_id from dom_am_best_carrier where ultimate_parent_amb_id=58167 OR amb_id=58167;";
 
-            while (result2.next()) {
-                int id = result2.getInt("id");
-                String name = result2.getString("name");
-                int parentId = result2.getInt("parent_company_id");
-                top_level = result2.getInt("top_level_company_id");
+            tree = populateFromDatabase(statement,query);
+            tree2= populateFromDatabase(statement,query2);
 
-
-                TreeNode temp = new TreeNode(id, name, parentId);
-                nodes2.add(temp);
-
-                if (top_level == id) {
-                    tree2 = new CompanyTree(temp);
-                }
-
-            }
 
         } catch (FileNotFoundException fnf){
             fnf.printStackTrace();
@@ -87,10 +91,8 @@ public class driver {
         }
 
 
-        tree.BuildTree(nodes);
         tree.reorderChildren();
       
-        tree2.BuildTree(nodes2);
         tree2.reorderChildren();
 
         tree.printRecursive();

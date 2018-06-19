@@ -23,7 +23,7 @@ public class CompanyTree {
         for (TreeNode childNode : nodeList){
             placed = false;
             for (TreeNode parentNode : nodeList){
-                if (childNode == getRoot()) {System.out.println("ITs my BIRTHday");break;}
+                if (childNode == getRoot()) break;
                 if(childNode.getParentId() != childNode.getId()) {
                     if (childNode.getParentId() == parentNode.getId()) {
                         parentNode.getChildren().add(childNode);
