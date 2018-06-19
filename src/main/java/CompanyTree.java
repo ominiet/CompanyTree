@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 
 public class CompanyTree {
@@ -25,6 +23,7 @@ public class CompanyTree {
         for (TreeNode childNode : nodeList){
             placed = false;
             for (TreeNode parentNode : nodeList){
+                if (childNode == getRoot()) {System.out.println("ITs my BIRTHday");break;}
                 if(childNode.getParentId() != childNode.getId()) {
                     if (childNode.getParentId() == parentNode.getId()) {
                         parentNode.getChildren().add(childNode);
@@ -37,12 +36,20 @@ public class CompanyTree {
                 }
             }
             if (!placed){
-                if(childNode.getParentId() == 0){
-                    root.getChildren().add(childNode);
+            //   System.out.println(root.getParentId());
+            //   System.out.println(childNode.getName());
+
+                if( childNode.getParentId() != 0 && childNode!= root){
+                    System.out.println(childNode.getParentId());
+                    System.out.println(childNode.getId());
+                    System.out.println(childNode.getName());
+                    getRoot().getChildren().add(childNode);
                 }
-                else unsorted.add(childNode);
+
+                //else unsorted.add(childNode);
             }
         }
+        Collections.sort(unsorted, new NameComparator());
     }
     TreeNode getRoot(){
         return root;
@@ -96,6 +103,7 @@ public class CompanyTree {
 
     private void printRecursive(TreeNode node, int depth){
         int temp = depth;
+        //System.out.println(depth);
         while(temp > 0){
 
             if(temp == 1) System.out.print("|-");
@@ -111,7 +119,27 @@ public class CompanyTree {
             printRecursive(child, depth);
         }
     }
+    void reorderChildren(){
+        reorderChildren(this.root);
 
+    }
+    private void reorderChildren(TreeNode node){
+        Collections.sort(node.getChildren(), new NameComparator());
+        for(TreeNode child : node.getChildren()){
+
+            reorderChildren(child);
+        }
+
+    }
+
+}
+
+//Allows children and unsorted ArrayLists to be ordered lexically
+class NameComparator implements Comparator<TreeNode> {
+
+    public int compare(TreeNode o1, TreeNode o2){
+        return o1.getName().compareToIgnoreCase(o2.getName());
+    }
 }
 
 
