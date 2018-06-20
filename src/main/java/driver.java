@@ -14,12 +14,12 @@ public class driver {
         queue.add(rm.getRoot());
 
         //D that persists through subtrees
-        double D=0;
+        int D=0;
 
         //Traverse rm from root
         while(!queue.isEmpty()){
             TreeNode next = queue.remove();
-            System.out.println(next.getName());
+          //  System.out.println(next.getName());
             TreeNode subtree = null;
 
             Queue<TreeNode> queue2 = new LinkedList<>();
@@ -28,34 +28,30 @@ public class driver {
             //Traverse rm from root
             while(!queue2.isEmpty()) {
                 TreeNode next2=queue2.remove();
-                System.out.println(next2.getName());
+              //  System.out.println(next2.getName());
 
                 //d local to queue2 used as control flow
-                double d=0.0;
+                int d=0;
 
 
                 //for each node in AMBest check if equal to RM node
                 for (TreeNode node:next2.getChildren()){
                     subtree = next.compareTo(node);
-                    double temp;
+                    int temp;
                     if (subtree!=null) {
-                     // temp = function;
-                     //   d+=temp;
-                       // D+=temp;
-                        System.out.println();
+                      temp = compareSubtrees(next ,node);
+                       d+=temp;
+                        D+=temp;
                     }
                     queue2.add(node);
 
-                    if (d!=0.0){
-                        for (TreeNode a:queue2){
-                            queue2.remove();
-                        }
+                    if (d!=0){
+                        queue2= new LinkedList<TreeNode>();
                     }
                 }
 
 
             }
-
                   if (subtree==null)  {
             for (TreeNode a : next.getChildren()) {
                 queue.add(a);
@@ -65,7 +61,7 @@ public class driver {
 
         }
 
-        return 1;
+        return D;
     }
 
     private static CompanyTree  populateFromDatabase(Statement statement, String query){
@@ -183,9 +179,9 @@ public class driver {
             for (CompanyTree amTree: ambest){
                 double N = rmTree.getSize();
                 N += amTree.getSize();
-                double D = compareSubtrees(rmTree.getRoot(),amTree.getRoot());
-
-                System.out.println("individual Sim Result: " + (D / (N - D)));
+                double D = similarities(rmTree,amTree);
+              // System.out.println("Nodes: " + N+" D: "+D);
+               //System.out.println("individual Sim Result: " + (D / (N - D)));
                 sim += (D / (N - D));
             }
         }
@@ -234,6 +230,7 @@ public class driver {
             System.out.println();
             e.printStackTrace();
         } catch (SQLException ex) {
+
             // handle any errors
             System.out.println("I'm and Error");
             System.out.println("SQLException: " + ex.getMessage());
@@ -241,11 +238,6 @@ public class driver {
             System.out.println("VendorError: " + ex.getErrorCode());
             System.out.println("------");
         }
-
-
-        //tree.reorderChildren();
-      
-        //tree2.reorderChildren();
 
         tree.printRecursive();
 
@@ -268,15 +260,7 @@ public class driver {
 
 
         System.out.println();
-        System.out.println(compareSubtrees(tree.getRoot(), tree3.getRoot()));
-
-        //System.out.println(tree.getRoot().compareTo(tree2.getRoot()));
-
         System.out.println("Similarity: " + Similarity(riskMatchTrees, AMBestTrees));
-
-
-        System.out.println(similarities(tree,tree2));
-
         System.exit(0);
     }
 }
