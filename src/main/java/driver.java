@@ -98,13 +98,33 @@ public class driver {
         return result;
 
     }
+
     public static int compareSubtrees(TreeNode rm, TreeNode am){
+        int D = 0;
+        if (rm.getName().equals(am.getName())) D ++;
 
-        return 0;
+        ArrayList<TreeNode> rmChildren = rm.getChildren();
+        ArrayList<TreeNode> amChildren = am.getChildren();
+        if (rm.getChildren().isEmpty() || am.getChildren().isEmpty()){  //dont bother checking further if there arent any children
+            return D;
+        }
+        for (TreeNode node : rmChildren){
+            for(TreeNode amnode: amChildren){
+                if (node.getName().equals(amnode.getName())){
+                    D += compareSubtrees(node, amnode );
+                }
+            }
+
+        }
+        return D;
     }
-    public static double Similarity(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest){
 
-        return 0.0;
+    public static double Similarity(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest){
+        double N = rm.get(0).getSize();
+        N += ambest.get(1).getSize();
+        double D = compareSubtrees(rm.get(0).getRoot(),ambest.get(1).getRoot());
+
+        return (D / (N - D));
     }
 
     public static void main(String[] args) {
@@ -181,7 +201,13 @@ public class driver {
 
         uniqueNodes(riskMatchTrees,AMBestTrees);
 
+
+        System.out.println();
+        System.out.println(compareSubtrees(tree.getRoot(), tree3.getRoot()));
+
         //System.out.println(tree.getRoot().compareTo(tree2.getRoot()));
+
+        System.out.println("Similarity: " + Similarity(riskMatchTrees, AMBestTrees));
 
 
         System.exit(0);
