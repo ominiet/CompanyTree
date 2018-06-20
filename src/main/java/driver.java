@@ -93,11 +93,20 @@ public class driver {
         result.add(source);
         result.add(destination);
 
-        System.out.format(format,source.size(),destination.size());
+        //System.out.format(format,source.size(),destination.size());
 
         return result;
 
     }
+    public static int compareSubtrees(TreeNode rm, TreeNode am){
+
+        return 0;
+    }
+    public static double Similarity(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest){
+
+        return 0.0;
+    }
+
     public static void main(String[] args) {
 
         int top_level = 0;
@@ -157,7 +166,12 @@ public class driver {
 
         System.out.println();
 
+
         tree2.printRecursive();
+        System.out.println();
+        tree3.printRecursive();
+
+
         ArrayList<CompanyTree> riskMatchTrees = new ArrayList<>();
         ArrayList<CompanyTree> AMBestTrees = new ArrayList<>();
 
@@ -166,6 +180,8 @@ public class driver {
         AMBestTrees.add(tree3);
 
         uniqueNodes(riskMatchTrees,AMBestTrees);
+
+        //System.out.println(tree.getRoot().compareTo(tree2.getRoot()));
 
 
         System.exit(0);

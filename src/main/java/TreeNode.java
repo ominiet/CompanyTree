@@ -18,6 +18,14 @@ public class TreeNode {
             this.parentId =parentId;
 
         }
+        TreeNode compareTo(TreeNode node){
+            if(this.companyName.equals(node.getName())){
+
+                return node;
+            }
+            else return null;
+        }
+
         public void printNode(){
             System.out.println(id + ": " + companyName);
         }
@@ -33,14 +41,6 @@ public class TreeNode {
         public int getParentId() {
             return parentId;
         }
-        public void setId(int id){
-            this.id=id;
-        }
-        public void setParentId(int pid){
-            this.parentId=pid;
-        }
-        public void setName(String name){
-            this.companyName=name;
-        }
+
 
 }
