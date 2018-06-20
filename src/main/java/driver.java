@@ -120,11 +120,19 @@ public class driver {
     }
 
     public static double Similarity(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest){
-        double N = rm.get(0).getSize();
-        N += ambest.get(1).getSize();
-        double D = compareSubtrees(rm.get(0).getRoot(),ambest.get(1).getRoot());
+        double sim = 0;
 
-        return (D / (N - D));
+        for (CompanyTree rmTree: rm){
+            for (CompanyTree amTree: ambest){
+                double N = rmTree.getSize();
+                N += amTree.getSize();
+                double D = compareSubtrees(rmTree.getRoot(),amTree.getRoot());
+
+                System.out.println("individual Sim Result: " + (D / (N - D)));
+                sim += (D / (N - D));
+            }
+        }
+        return sim;
     }
 
     public static void main(String[] args) {
