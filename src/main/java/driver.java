@@ -3,13 +3,70 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 
 public class driver {
+
+    private static int similarities(CompanyTree rm, CompanyTree ambest){
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(rm.getRoot());
+
+        //D that persists through subtrees
+        double D=0;
+
+        //Traverse rm from root
+        while(!queue.isEmpty()){
+            TreeNode next = queue.remove();
+            System.out.println(next.getName());
+            TreeNode subtree = null;
+
+            Queue<TreeNode> queue2 = new LinkedList<>();
+            queue2.add(ambest.getRoot());
+
+            //Traverse rm from root
+            while(!queue2.isEmpty()) {
+                TreeNode next2=queue2.remove();
+                System.out.println(next2.getName());
+
+                //d local to queue2 used as control flow
+                double d=0.0;
+
+
+                //for each node in AMBest check if equal to RM node
+                for (TreeNode node:next2.getChildren()){
+                    subtree = next.compareTo(node);
+                    double temp;
+                    if (subtree!=null) {
+                     // temp = function;
+                     //   d+=temp;
+                       // D+=temp;
+                        System.out.println();
+                    }
+                    queue2.add(node);
+
+                    if (d!=0.0){
+                        for (TreeNode a:queue2){
+                            queue2.remove();
+                        }
+                    }
+                }
+
+
+            }
+
+                  if (subtree==null)  {
+            for (TreeNode a : next.getChildren()) {
+                queue.add(a);
+            }
+            }
+
+
+        }
+
+        return 1;
+    }
 
     private static CompanyTree  populateFromDatabase(Statement statement, String query){
 
@@ -217,6 +274,8 @@ public class driver {
 
         System.out.println("Similarity: " + Similarity(riskMatchTrees, AMBestTrees));
 
+
+        System.out.println(similarities(tree,tree2));
 
         System.exit(0);
     }
