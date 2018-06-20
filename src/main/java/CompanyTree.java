@@ -49,9 +49,6 @@ public class CompanyTree {
             //   System.out.println(childNode.getName());
 
                 if( childNode.getParentId() != 0 && childNode!= root){
-                    System.out.println(childNode.getParentId());
-                    System.out.println(childNode.getId());
-                    System.out.println(childNode.getName());
                     getRoot().getChildren().add(childNode);
                 }
 
