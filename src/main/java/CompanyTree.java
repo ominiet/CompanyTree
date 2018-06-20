@@ -19,7 +19,9 @@ public class CompanyTree {
         this.companyNames = new ArrayList<>();
     }
 
-
+    public int getSize(){
+        return this.companyNames.size();
+    }
     public ArrayList<String> getCompanyNames() {
         return companyNames;
     }
