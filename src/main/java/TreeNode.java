@@ -4,6 +4,7 @@ public class TreeNode {
         private String companyName;
         private int id;
         private int parentId;
+        private TreeNode parent;
         private ArrayList<TreeNode> children;
 
         TreeNode() {
@@ -16,8 +17,16 @@ public class TreeNode {
             this.children = new ArrayList<TreeNode>();
             this.id = id;
             this.parentId =parentId;
-
+            this.parent = null;
         }
+        TreeNode compareTo(TreeNode node){
+            if(this.companyName.equals(node.getName())){
+
+                return node;
+            }
+            else return null;
+        }
+
         public void printNode(){
             System.out.println(id + ": " + companyName);
         }
@@ -33,14 +42,14 @@ public class TreeNode {
         public int getParentId() {
             return parentId;
         }
-        public void setId(int id){
-            this.id=id;
+        public String getParentName(){
+            if (parent != null)
+            return parent.getName();
+            else return "Null";
+
         }
-        public void setParentId(int pid){
-            this.parentId=pid;
-        }
-        public void setName(String name){
-            this.companyName=name;
+        public void setParent(TreeNode parent){
+            this.parent = parent;
         }
 
 }
