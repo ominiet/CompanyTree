@@ -8,10 +8,6 @@ public class CompanyTree {
     private ArrayList<TreeNode> nodeList;
     private ArrayList<String> companyNames;
 
-    CompanyTree() {
-        this.root = null;
-        this.unsorted = new ArrayList<>();
-    }
 
     CompanyTree(TreeNode start) {
         this.root = start;
@@ -19,24 +15,28 @@ public class CompanyTree {
         this.companyNames = new ArrayList<>();
     }
 
-    public int getSize() {
+    int getSize() {
         return this.companyNames.size();
     }
 
-    public ArrayList<String> getCompanyNames() {
+    ArrayList<String> getCompanyNames() {
         return companyNames;
     }
 
     void BuildTree(ArrayList<TreeNode> nodeList) {
+        //System.out.println(nodeList.size());
         boolean placed;
-
+        //go through list of nodes passed in (We already know the root)
         for (TreeNode childNode : nodeList) {
             placed = false;
+            //search for a parent in the list
             for (TreeNode parentNode : nodeList) {
+                //if the node is the root, add to company names and do nothing else
                 if (childNode == getRoot()) {
                     this.companyNames.add(childNode.getName());
                     break;
                 }
+                //if the child finds a parent with a different id than its own, add to list of children
                 if (childNode.getParentId() != childNode.getId()) {
                     if (childNode.getParentId() == parentNode.getId()) {
                         parentNode.getChildren().add(childNode);
@@ -51,13 +51,14 @@ public class CompanyTree {
                 }
             }
             if (!placed) {
-                if (childNode.getParentId() != 0 && childNode != root) {
+                if (childNode != root) {
                     getRoot().getChildren().add(childNode);
                 }
             }
+            //System.out.println();
         }
         this.nodeList = nodeList;
-        Collections.sort(unsorted, new NameComparator());
+        unsorted.sort(new NameComparator());
         Collections.sort(this.getCompanyNames());
 
     }
@@ -67,7 +68,7 @@ public class CompanyTree {
     }
 
 
-    boolean addNode(TreeNode find) {
+/*    boolean addNode(TreeNode find) {
 
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
 
@@ -98,9 +99,9 @@ public class CompanyTree {
 
         unsorted.add(find);
         return false;
-    }
+    }*/
 
-    public void printRecursive() {
+    void printRecursive() {
         printRecursive(root, 0);
 
         if (unsorted.size() > 0) {
@@ -136,7 +137,7 @@ public class CompanyTree {
     }
 
     private void reorderChildren(TreeNode node) {
-        Collections.sort(node.getChildren(), new NameComparator());
+        node.getChildren().sort(new NameComparator());
         for (TreeNode child : node.getChildren()) {
 
             reorderChildren(child);
