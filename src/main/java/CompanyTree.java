@@ -1,3 +1,5 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.*;
 
 
@@ -68,40 +70,14 @@ public class CompanyTree {
     }
 
 
-/*    boolean addNode(TreeNode find) {
-
-        Queue<TreeNode> queue = new LinkedList<TreeNode>();
-
-        queue.add(root);
-        while (true) {
-
-            int nodeCount = queue.size();
-            if (nodeCount == 0) {
-                break;
-            }
-
-            while (nodeCount > 0) {
-                TreeNode node = queue.peek();
-
-                if (node.getId() == find.getParentId()) {
-                    node.getChildren().add(find);
-                    return true;
-                }
-                if (node.getId() != find.getId())
-                    queue.remove();
-                for (TreeNode child : node.getChildren()) {
-                    queue.add(child);
-                }
-                nodeCount--;
-            }
-            // System.out.println();
-        }
-
-        unsorted.add(find);
-        return false;
-    }*/
-
     void printRecursive() {
+//        try {
+//            BufferedWriter writer = new BufferedWriter(new FileWriter("./rmTrees.txt", true));
+//            writer.write("\n");
+//            writer.close();
+//        } catch(java.io.IOException e ){
+//           e.printStackTrace();
+//        }
         printRecursive(root, 0);
 
         if (unsorted.size() > 0) {
@@ -114,16 +90,34 @@ public class CompanyTree {
 
     private void printRecursive(TreeNode node, int depth) {
         int temp = depth;
-        //System.out.println(depth);
-        while (temp > 0) {
+        //try {
+            //BufferedWriter writer = new BufferedWriter(new FileWriter("./rmTrees.txt", true));
+            while (temp > 0) {
 
-            if (temp == 1) System.out.print("|-");
-            else System.out.print("|");
+                if (temp == 1) {
+                    System.out.print("|-");
+                    //writer.write("|-");
+                }
+                else {System.out.print("|");
+                    //writer.write("|");
+                }
 
-            System.out.print("\t");
-            temp--;
-        }
-        System.out.println(node.getName());
+                System.out.print("\t");
+                //writer.write("\t");
+                temp--;
+            }
+            System.out.print(node.getName());
+            //writer.write(node.getName());
+            if(node.getRole() != null){
+                System.out.print(" - " + node.getRole());
+                //writer.write(" - " + node.getRole());
+            }
+            System.out.println();
+            //writer.newLine();
+            //writer.close();
+        //} catch (java.io.IOException e){
+        //    e.printStackTrace();
+        //}
         depth++;
         for (TreeNode child : node.getChildren()) {
 
