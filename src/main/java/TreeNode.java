@@ -1,24 +1,29 @@
 import java.util.ArrayList;
 
-public class TreeNode {
+class TreeNode {
         private String companyName;
-        private int id;
-        private int parentId;
+        private long id;
+        private long parentId;
         private TreeNode parent;
         private ArrayList<TreeNode> children;
+        private String role;
 
-        TreeNode() {
-            this.companyName = "unset";
-            this.id = 0000;
-            this.children = new ArrayList<TreeNode>();
-        }
-        TreeNode(int id, String name, int parentId){
+        TreeNode(long id, String name, long parentId){
             this.companyName = name;
-            this.children = new ArrayList<TreeNode>();
+            this.children = new ArrayList<>();
             this.id = id;
             this.parentId =parentId;
             this.parent = null;
+            this.role = null;
         }
+    TreeNode(long id, String name, long parentId, String role){
+        this.companyName = name;
+        this.children = new ArrayList<>();
+        this.id = id;
+        this.parentId =parentId;
+        this.parent = null;
+        this.role = role;
+    }
         TreeNode compareTo(TreeNode node){
             if(this.companyName.equals(node.getName())){
 
@@ -27,29 +32,29 @@ public class TreeNode {
             else return null;
         }
 
-        public void printNode(){
-            System.out.println(id + ": " + companyName);
-        }
-        public String getName(){
+
+        String getName(){
             return companyName;
         }
-        public ArrayList<TreeNode> getChildren() {
+        ArrayList<TreeNode> getChildren() {
             return children;
         }
-        public int getId(){
+        long getId(){
             return id;
         }
-        public int getParentId() {
+        long getParentId() {
             return parentId;
         }
-        public String getParentName(){
+        String getParentName(){
             if (parent != null)
             return parent.getName();
             else return "Null";
 
         }
-        public void setParent(TreeNode parent){
+        void setParent(TreeNode parent){
             this.parent = parent;
         }
-
+        String getRole() {
+            return role;
+        }
 }

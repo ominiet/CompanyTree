@@ -1,3 +1,5 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.*;
 
 
@@ -8,10 +10,6 @@ public class CompanyTree {
     private ArrayList<TreeNode> nodeList;
     private ArrayList<String> companyNames;
 
-    CompanyTree() {
-        this.root = null;
-        this.unsorted = new ArrayList<>();
-    }
 
     CompanyTree(TreeNode start) {
         this.root = start;
@@ -19,24 +17,28 @@ public class CompanyTree {
         this.companyNames = new ArrayList<>();
     }
 
-    public int getSize() {
+    int getSize() {
         return this.companyNames.size();
     }
 
-    public ArrayList<String> getCompanyNames() {
+    ArrayList<String> getCompanyNames() {
         return companyNames;
     }
 
     void BuildTree(ArrayList<TreeNode> nodeList) {
+        //System.out.println(nodeList.size());
         boolean placed;
-
+        //go through list of nodes passed in (We already know the root)
         for (TreeNode childNode : nodeList) {
             placed = false;
+            //search for a parent in the list
             for (TreeNode parentNode : nodeList) {
+                //if the node is the root, add to company names and do nothing else
                 if (childNode == getRoot()) {
                     this.companyNames.add(childNode.getName());
                     break;
                 }
+                //if the child finds a parent with a different id than its own, add to list of children
                 if (childNode.getParentId() != childNode.getId()) {
                     if (childNode.getParentId() == parentNode.getId()) {
                         parentNode.getChildren().add(childNode);
@@ -51,13 +53,14 @@ public class CompanyTree {
                 }
             }
             if (!placed) {
-                if (childNode.getParentId() != 0 && childNode != root) {
+                if (childNode != root) {
                     getRoot().getChildren().add(childNode);
                 }
             }
+            //System.out.println();
         }
         this.nodeList = nodeList;
-        Collections.sort(unsorted, new NameComparator());
+        unsorted.sort(new NameComparator());
         Collections.sort(this.getCompanyNames());
 
     }
@@ -67,40 +70,14 @@ public class CompanyTree {
     }
 
 
-    boolean addNode(TreeNode find) {
-
-        Queue<TreeNode> queue = new LinkedList<TreeNode>();
-
-        queue.add(root);
-        while (true) {
-
-            int nodeCount = queue.size();
-            if (nodeCount == 0) {
-                break;
-            }
-
-            while (nodeCount > 0) {
-                TreeNode node = queue.peek();
-
-                if (node.getId() == find.getParentId()) {
-                    node.getChildren().add(find);
-                    return true;
-                }
-                if (node.getId() != find.getId())
-                    queue.remove();
-                for (TreeNode child : node.getChildren()) {
-                    queue.add(child);
-                }
-                nodeCount--;
-            }
-            // System.out.println();
-        }
-
-        unsorted.add(find);
-        return false;
-    }
-
-    public void printRecursive() {
+    void printRecursive() {
+//        try {
+//            BufferedWriter writer = new BufferedWriter(new FileWriter("./rmTrees.txt", true));
+//            writer.write("\n");
+//            writer.close();
+//        } catch(java.io.IOException e ){
+//           e.printStackTrace();
+//        }
         printRecursive(root, 0);
 
         if (unsorted.size() > 0) {
@@ -113,16 +90,34 @@ public class CompanyTree {
 
     private void printRecursive(TreeNode node, int depth) {
         int temp = depth;
-        //System.out.println(depth);
-        while (temp > 0) {
+        //try {
+            //BufferedWriter writer = new BufferedWriter(new FileWriter("./rmTrees.txt", true));
+            while (temp > 0) {
 
-            if (temp == 1) System.out.print("|-");
-            else System.out.print("|");
+                if (temp == 1) {
+                    System.out.print("|-");
+                    //writer.write("|-");
+                }
+                else {System.out.print("|");
+                    //writer.write("|");
+                }
 
-            System.out.print("\t");
-            temp--;
-        }
-        System.out.println(node.getName());
+                System.out.print("\t");
+                //writer.write("\t");
+                temp--;
+            }
+            System.out.print(node.getName());
+            //writer.write(node.getName());
+            if(node.getRole() != null){
+                System.out.print(" - " + node.getRole());
+                //writer.write(" - " + node.getRole());
+            }
+            System.out.println();
+            //writer.newLine();
+            //writer.close();
+        //} catch (java.io.IOException e){
+        //    e.printStackTrace();
+        //}
         depth++;
         for (TreeNode child : node.getChildren()) {
 
@@ -136,7 +131,7 @@ public class CompanyTree {
     }
 
     private void reorderChildren(TreeNode node) {
-        Collections.sort(node.getChildren(), new NameComparator());
+        node.getChildren().sort(new NameComparator());
         for (TreeNode child : node.getChildren()) {
 
             reorderChildren(child);
