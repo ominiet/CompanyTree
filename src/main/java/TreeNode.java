@@ -1,55 +1,66 @@
 import java.util.ArrayList;
 
-public class TreeNode {
-        private String companyName;
-        private int id;
-        private int parentId;
-        private TreeNode parent;
-        private ArrayList<TreeNode> children;
+class TreeNode {
+    private String companyName;
+    private long id;
+    private long parentId;
+    private TreeNode parent;
+    private ArrayList<TreeNode> children;
+    private String role;
 
-        TreeNode() {
-            this.companyName = "unset";
-            this.id = 0000;
-            this.children = new ArrayList<TreeNode>();
-        }
-        TreeNode(int id, String name, int parentId){
-            this.companyName = name;
-            this.children = new ArrayList<TreeNode>();
-            this.id = id;
-            this.parentId =parentId;
-            this.parent = null;
-        }
-        TreeNode compareTo(TreeNode node){
-            if(this.companyName.equals(node.getName())){
+    TreeNode(long id, String name, long parentId) {
+        this.companyName = name;
+        this.children = new ArrayList<>();
+        this.id = id;
+        this.parentId = parentId;
+        this.parent = null;
+        this.role = null;
+    }
 
-                return node;
-            }
-            else return null;
-        }
+    TreeNode(long id, String name, long parentId, String role) {
+        this.companyName = name;
+        this.children = new ArrayList<>();
+        this.id = id;
+        this.parentId = parentId;
+        this.parent = null;
+        this.role = role;
+    }
 
-        public void printNode(){
-            System.out.println(id + ": " + companyName);
-        }
-        public String getName(){
-            return companyName;
-        }
-        public ArrayList<TreeNode> getChildren() {
-            return children;
-        }
-        public int getId(){
-            return id;
-        }
-        public int getParentId() {
-            return parentId;
-        }
-        public String getParentName(){
-            if (parent != null)
+    TreeNode compareTo(TreeNode node) {
+        if (this.companyName.equals(node.getName())) {
+            return node;
+        } else return null;
+    }
+
+
+    String getName() {
+        return companyName;
+    }
+
+    ArrayList<TreeNode> getChildren() {
+        return children;
+    }
+
+    long getId() {
+        return id;
+    }
+
+    long getParentId() {
+        return parentId;
+    }
+
+    String getParentName() {
+        if (parent != null)
             return parent.getName();
-            else return "Null";
+        else return "Null";
 
-        }
-        public void setParent(TreeNode parent){
-            this.parent = parent;
-        }
+    }
 
+    void setParent(TreeNode parent) {
+        this.parent = parent;
+    }
+
+    String getRole() {
+        return role;
+    }
 }
