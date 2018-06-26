@@ -6,4 +6,5 @@ gradle/
 .DS_STORE
 out/
 Props/config.properties
+build
 
