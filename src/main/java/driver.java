@@ -2,7 +2,7 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-//TODO: change all of the id data types from int to long
+
 public class driver {
 
     private static int similarities(CompanyTree rm, CompanyTree ambest) {
@@ -36,9 +36,14 @@ public class driver {
                     subtree = next.compareTo(node);
                     int temp;
                     if (subtree != null) {
+
                         temp = compareSubtrees(next, node);
                         d += temp;
                         D += temp;
+                        System.out.println("temp is = " + temp);
+                        System.out.println("d is = " + d);
+                        System.out.println("D is = " + D);
+
                     }
                     queue2.add(node);
 
@@ -223,19 +228,19 @@ public class driver {
         for (CompanyTree amTree : ambest) {
             N += amTree.getSize();
         }
-        System.out.println(N);
         for (CompanyTree rmTree : rm) {
             for (CompanyTree amTree : ambest) {
                 //double N = rmTree.getSize();
                 //N += amTree.getSize();
                 double D = similarities(rmTree, amTree);
-                // System.out.println("Nodes: " + N+" D: "+D);
-//                if((D / (N - D)) > 0) {
-//                    System.out.println(N);
-//                    System.out.println(D);
-//                    System.out.println("individual Sim Result: " + (D / (N - D)));
-//                }
+                 System.out.println("Nodes: " + N+" D: "+D);
+                if((D / (N - D)) > 0) {
+                    System.out.println(N);
+                    System.out.println(D);
+                    System.out.println("individual Sim Result: " + (D / (N - D)));
+                }
                 sim += (D / (N - D));
+
             }
         }
         return sim;
@@ -450,11 +455,12 @@ public class driver {
             System.out.println("VendorError: " + ex.getErrorCode());
             System.out.println("------");
         }
+
 //        for (CompanyTree t : rmTrees) {
 //            System.out.println();
 //            t.printRecursive();
 //        }
-
+////
 //        for (CompanyTree t: amTrees){
 //            System.out.println();
 //            t.printRecursive();
