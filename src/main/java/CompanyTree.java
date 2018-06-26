@@ -1,5 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.*;
 
 
@@ -25,6 +23,23 @@ public class CompanyTree {
         return companyNames;
     }
 
+    TreeNode getRoot() {
+        return root;
+    }
+
+    ArrayList<TreeNode> getNodes() {
+        return nodeList;
+    }
+
+
+    void printRecursive() {
+
+        String result1="";
+
+        System.out.println(printRecursive(root, 0, result1));
+
+
+    }
     void BuildTree(ArrayList<TreeNode> nodeList) {
         //System.out.println(nodeList.size());
         boolean placed;
@@ -65,65 +80,6 @@ public class CompanyTree {
 
     }
 
-    TreeNode getRoot() {
-        return root;
-    }
-
-
-    void printRecursive() {
-//        try {
-//            BufferedWriter writer = new BufferedWriter(new FileWriter("./rmTrees.txt", true));
-//            writer.write("\n");
-//            writer.close();
-//        } catch(java.io.IOException e ){
-//           e.printStackTrace();
-//        }
-        printRecursive(root, 0);
-
-        if (unsorted.size() > 0) {
-            System.out.println("\nUnsorted Nodes:");
-            for (TreeNode node : unsorted) {
-                System.out.println(node.getName());
-            }
-        }
-    }
-
-    private void printRecursive(TreeNode node, int depth) {
-        int temp = depth;
-        //try {
-            //BufferedWriter writer = new BufferedWriter(new FileWriter("./rmTrees.txt", true));
-            while (temp > 0) {
-
-                if (temp == 1) {
-                    System.out.print("|-");
-                    //writer.write("|-");
-                }
-                else {System.out.print("|");
-                    //writer.write("|");
-                }
-
-                System.out.print("\t");
-                //writer.write("\t");
-                temp--;
-            }
-            System.out.print(node.getName());
-            //writer.write(node.getName());
-            if(node.getRole() != null){
-                System.out.print(" - " + node.getRole());
-                //writer.write(" - " + node.getRole());
-            }
-            System.out.println();
-            //writer.newLine();
-            //writer.close();
-        //} catch (java.io.IOException e){
-        //    e.printStackTrace();
-        //}
-        depth++;
-        for (TreeNode child : node.getChildren()) {
-
-            printRecursive(child, depth);
-        }
-    }
 
     void reorderChildren() {
         reorderChildren(this.root);
@@ -139,9 +95,34 @@ public class CompanyTree {
 
     }
 
-    ArrayList<TreeNode> getNodes() {
-        return nodeList;
+    private String printRecursive(TreeNode node, int depth, String output) {
+        int temp = depth;
+
+            while (temp > 0) {
+
+                if (temp == 1) {
+                    output+="|-";
+                }
+                else {
+                    output+="|";
+                }
+
+                output+="\t";
+                temp--;
+            }
+            output+=node.getName();
+            if(node.getRole() != null){
+                output+= " - " + node.getRole();
+            }
+            output+="\n";
+            depth++;
+        for (TreeNode child : node.getChildren()) {
+
+            output = printRecursive(child, depth,output);
+        }
+        return output;
     }
+
 }
 
 //Allows children and unsorted ArrayLists to be ordered lexically
