@@ -6,7 +6,6 @@ import java.util.*;
 public class driver {
 
     private static int similarities(CompanyTree rm, CompanyTree ambest) {
-
         Queue<TreeNode> queue = new LinkedList<>();
 
         //initialize queue with root of RiskMatch tree
@@ -15,13 +14,13 @@ public class driver {
         //count of similar nodes in the tree
         int D = 0;
 
+
+        boolean isFoundFlag;
         //Traverse rm from root
         while (!queue.isEmpty()) {
+            isFoundFlag = false;
             //take first item in the queue
             TreeNode next = queue.remove();
-
-            //subtree?
-            TreeNode subtree = null;
 
             //get the whole tree from am best to search through
             Queue<TreeNode> queue2 = new LinkedList<>();
@@ -31,18 +30,25 @@ public class driver {
             while (!queue2.isEmpty()) {
                 //take first item in the queue
                 TreeNode next2 = queue2.remove();
-                if (next.compareTo(next2) == null){
-                    for (TreeNode node : next.getChildren()){
-                        queue.add(node);
-                    }
-                }
-                else {
+                if (next.compareTo(next2) != null){
+
+                    isFoundFlag = true;
                     D += compareSubtrees(next, next2);
+                    queue.clear();
+                    break;
+                }
+
+               for (TreeNode child : next2.getChildren()){
+                    queue2.add(child);
+               }
+            }
+            if(!isFoundFlag){
+                for (TreeNode node : next.getChildren()){
+                    queue.add(node);
                 }
             }
 
         }
-
         return D;
     }
 
@@ -208,21 +214,17 @@ public class driver {
         for (CompanyTree amTree : ambest) {
             N += amTree.getSize();
         }
+        int i = 0;
+        System.out.println();
         for (CompanyTree rmTree : rm) {
+            System.out.print("\r");
+            System.out.print("(" + (i++ + 1) + "/" + rm.size() + ") Checking similarities for tree: " +  rmTree.getRoot().getName());
             for (CompanyTree amTree : ambest) {
-                //double N = rmTree.getSize();
-                //N += amTree.getSize();
                 double D = similarities(rmTree, amTree);
-                 System.out.println("Nodes: " + N+" D: "+D);
-                if((D / (N - D)) > 0) {
-                    System.out.println(N);
-                    System.out.println(D);
-                    System.out.println("individual Sim Result: " + (D / (N - D)));
-                }
                 sim += (D / (N - D));
-
             }
         }
+        System.out.print("\r");
         return sim;
     }
 
@@ -265,16 +267,9 @@ public class driver {
 
     public static void main(String[] args) {
 
-        ArrayList<TreeNode> nodes = new ArrayList<TreeNode>();
-        ArrayList<TreeNode> nodes2 = new ArrayList<TreeNode>();
-
         ArrayList<CompanyTree> rmTrees = new ArrayList<>();
         ArrayList<CompanyTree> amTrees = new ArrayList<>();
-        Connection conn = null;
-
-        CompanyTree tree = null;
-        CompanyTree tree2 = null;
-        CompanyTree tree3 = null;
+        Connection conn;
 
         Properties prop = new Properties();
         InputStream input;
@@ -453,8 +448,9 @@ public class driver {
         //System.out.println();
         //uniqueNodes(rmTrees, amTrees);
 
-
+        //System.out.println("Starting Similarity run");
         System.out.println();
+
         System.out.println("Similarity: " + Similarity(rmTrees, amTrees));
 
         System.out.println();
