@@ -8,58 +8,38 @@ public class driver {
     private static int similarities(CompanyTree rm, CompanyTree ambest) {
 
         Queue<TreeNode> queue = new LinkedList<>();
+
+        //initialize queue with root of RiskMatch tree
         queue.add(rm.getRoot());
 
-        //D that persists through subtrees
+        //count of similar nodes in the tree
         int D = 0;
 
         //Traverse rm from root
         while (!queue.isEmpty()) {
+            //take first item in the queue
             TreeNode next = queue.remove();
-            //  System.out.println(next.getName());
+
+            //subtree?
             TreeNode subtree = null;
 
+            //get the whole tree from am best to search through
             Queue<TreeNode> queue2 = new LinkedList<>();
             queue2.add(ambest.getRoot());
 
             //Traverse rm from root
             while (!queue2.isEmpty()) {
+                //take first item in the queue
                 TreeNode next2 = queue2.remove();
-                //  System.out.println(next2.getName());
-
-                //d local to queue2 used as control flow
-                int d = 0;
-
-
-                //for each node in AMBest check if equal to RM node
-                for (TreeNode node : next2.getChildren()) {
-                    subtree = next.compareTo(node);
-                    int temp;
-                    if (subtree != null) {
-
-                        temp = compareSubtrees(next, node);
-                        d += temp;
-                        D += temp;
-                        System.out.println("temp is = " + temp);
-                        System.out.println("d is = " + d);
-                        System.out.println("D is = " + D);
-
-                    }
-                    queue2.add(node);
-
-                    if (d != 0) {
-                        queue2 = new LinkedList<>();
+                if (next.compareTo(next2) == null){
+                    for (TreeNode node : next.getChildren()){
+                        queue.add(node);
                     }
                 }
-
-
-            }
-            if (subtree == null) {
-                for (TreeNode a : next.getChildren()) {
-                    queue.add(a);
+                else {
+                    D += compareSubtrees(next, next2);
                 }
             }
-
 
         }
 
