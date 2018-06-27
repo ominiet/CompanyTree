@@ -2,9 +2,15 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
+import org.apache.commons.text.similarity.FuzzyScore;
+
 
 public class driver {
-
+    /**
+     *
+     * @param prop Properties object containing database username and password
+     * @return  A list of all top level companies for bot risk match and AM Best
+     */
     private static ArrayList<ArrayList<Long>> getAllTopLevelCompanies(Properties prop) {
         ArrayList<Long> topLevelRMCompanies = new ArrayList<>();
         ArrayList<Long> topLevelAMCompanies = new ArrayList<>();
@@ -77,6 +83,38 @@ public class driver {
         }
 
         return tree1;
+    }
+
+
+    ///Search for an exact match of name string your set of risk match trees
+    private static void fuzzySearch(String search, ArrayList<CompanyTree> rm){
+
+        FuzzyScore score = new FuzzyScore(Locale.ENGLISH);
+
+        int mark = (int)((double)score.fuzzyScore(search, search) * .30);
+        System.out.println("Mark: " + mark);
+
+        ArrayList<FuzzyResult> matches = new ArrayList<>();
+
+        for (CompanyTree rmTree : rm){
+
+            for (TreeNode node: rmTree.getNodes()){
+                int fScore = score.fuzzyScore(node.getName(), search);
+                if (fScore > mark ){
+                    matches.add(new FuzzyResult(node, score.fuzzyScore(node.getName(), search)));
+                }
+            }
+        }
+
+        matches.sort(Comparator.comparingInt(FuzzyResult::getResult).reversed());
+        if (matches.size() > 20){
+            matches.subList(19, matches.size()-1).clear();
+        }
+        System.out.println();
+        System.out.println(matches.size());
+        for (FuzzyResult n : matches) {
+            System.out.println(n.getNode() + " " + n.getResult());
+        }
     }
 
 
@@ -228,16 +266,9 @@ public class driver {
                 amTrees.add(tempTree);
             }
 
-
-        } catch (FileNotFoundException fnf) {
-            fnf.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NumberFormatException e) {
-            System.out.println();
+        } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         } catch (SQLException ex) {
-
             // handle any errors
             System.out.println("I'm and Error");
             System.out.println("SQLException: " + ex.getMessage());
@@ -250,13 +281,22 @@ public class driver {
 //            System.out.println();
 //            t.printRecursive();
 //        }
-////
+
 //        for (CompanyTree t: amTrees){
 //            System.out.println();
 //            t.printRecursive();
 //
 //        }
 
+        //fuzzySearch("indiana insurance company", rmTrees);
+        Scanner in = new Scanner(System.in);
+        while(in.nextInt() != -1){
+
+
+            System.out.println("Fuzzy Search");
+            in.nextLine();
+            fuzzySearch(in.nextLine(), rmTrees);
+        }
 
 
         //find unique nodes for the two sets of trees
@@ -266,7 +306,7 @@ public class driver {
         //System.out.println("Starting Similarity run");
         System.out.println();
 
-        System.out.println("Similarity: " + CompanyTree.Similarity(rmTrees, amTrees));
+        //System.out.println("Similarity: " + CompanyTree.Similarity(rmTrees, amTrees));
 
         System.out.println();
 
@@ -279,3 +319,20 @@ public class driver {
         System.exit(0);
     }
 }
+class FuzzyResult{
+    private int result;
+    private TreeNode node;
+
+    FuzzyResult(TreeNode node, int result){
+        this.result = result;
+        this.node = node;
+    }
+
+    public int getResult() {
+        return result;
+    }
+    public TreeNode getNode(){
+        return node;
+    }
+}
+

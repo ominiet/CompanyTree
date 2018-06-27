@@ -25,6 +25,7 @@ public class CompanyTree {
         for (TreeNode node : nodes) {
             if (rootCode == node.getId()) {
                 this.root = node;
+                this.root.setTree(this);
                 setRootFlag = true;
                 break;
             }
@@ -63,6 +64,7 @@ public class CompanyTree {
             placed = false;
             //search for a parent in the list
             for (TreeNode parentNode : nodeList) {
+                childNode.setTree(this);
                 //if the node is the root, add to company names and do nothing else
                 if (childNode == getRoot()) {
                     this.companyNames.add(childNode.getName());
@@ -74,6 +76,7 @@ public class CompanyTree {
                         parentNode.getChildren().add(childNode);
                         this.companyNames.add(childNode.getName());
                         childNode.setParent(parentNode);
+                        //childNode.setTree(this);
                         placed = true;
 
                     }
