@@ -5,51 +5,41 @@ import java.util.*;
 
 public class driver {
 
-    private static int similarities(CompanyTree rm, CompanyTree ambest) {
-        Queue<TreeNode> queue = new LinkedList<>();
+    private static ArrayList<ArrayList<Long>> getAllTopLevelCompanies(Properties prop) {
+        ArrayList<Long> topLevelRMCompanies = new ArrayList<>();
+        ArrayList<Long> topLevelAMCompanies = new ArrayList<>();
 
-        //initialize queue with root of RiskMatch tree
-        queue.add(rm.getRoot());
+        //Run SQL Queries
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/masterdb",
+                    prop.getProperty("username"), prop.getProperty("password"));
+            PreparedStatement pStatement = conn.prepareStatement("select COUNT(distinct name) as tree_size, ultimate_parent_amb_id from dom_am_best_carrier group by ultimate_parent_amb_id order by tree_size desc;");
+            ResultSet rs = pStatement.executeQuery();
 
-        //count of similar nodes in the tree
-        int D = 0;
 
-
-        boolean isFoundFlag;
-        //Traverse rm from root
-        while (!queue.isEmpty()) {
-            isFoundFlag = false;
-            //take first item in the queue
-            TreeNode next = queue.remove();
-
-            //get the whole tree from am best to search through
-            Queue<TreeNode> queue2 = new LinkedList<>();
-            queue2.add(ambest.getRoot());
-
-            //Traverse rm from root
-            while (!queue2.isEmpty()) {
-                //take first item in the queue
-                TreeNode next2 = queue2.remove();
-                if (next.compareTo(next2) != null){
-
-                    isFoundFlag = true;
-                    D += compareSubtrees(next, next2);
-                    queue.clear();
-                    break;
-                }
-
-               for (TreeNode child : next2.getChildren()){
-                    queue2.add(child);
-               }
-            }
-            if(!isFoundFlag){
-                for (TreeNode node : next.getChildren()){
-                    queue.add(node);
-                }
+            while (rs.next()) {
+                if (rs.getInt("ultimate_parent_amb_id") != 0)
+                    topLevelAMCompanies.add(rs.getLong("ultimate_parent_amb_id"));
             }
 
+            pStatement = conn.prepareStatement("select count(distinct name) as tree_size, top_level_company_id from dom_company group by top_level_company_id order by tree_size desc;");
+            rs = pStatement.executeQuery();
+
+            while (rs.next()) {
+                if (rs.getLong("top_level_company_id") != 0)
+                    topLevelRMCompanies.add(rs.getLong("top_level_company_id"));
+            }
+            conn.close();
+        } catch (SQLException sq) {
+            sq.printStackTrace();
         }
-        return D;
+
+
+        //return sql query results
+        ArrayList<ArrayList<Long>> result = new ArrayList<>(2);
+        result.add(topLevelRMCompanies);
+        result.add(topLevelAMCompanies);
+        return result;
     }
 
     private static CompanyTree populateFromDatabase(Statement statement, String query) {
@@ -89,181 +79,6 @@ public class driver {
         return tree1;
     }
 
-    static ArrayList<ArrayList<TreeNode>> similarNodes(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
-        ArrayList<TreeNode> similarInRMTree = new ArrayList<>();
-        ArrayList<TreeNode> similarInAMTree = new ArrayList<>();
-
-        //TODO: this currently has m*n*o*p time complexity. See if there is another workaround
-        int x = 0;
-        for (CompanyTree rmTree : rm) {
-            //System.out.println("Checking Risk Match Tree (" + x++ + "/" + rm.size() + ")");
-            for (CompanyTree amTree : ambest) {
-                //System.out.println("Nodes from tree with " +  amTree.getRoot().getName() + " as the root");
-                for (TreeNode amNode : amTree.getNodes()) {
-                    for (TreeNode rmNode : rmTree.getNodes()) {
-                        if (amNode.getName().equals(rmNode.getName())) {
-                            similarInRMTree.add(rmNode);
-                            similarInAMTree.add(amNode);
-                        }
-                    }
-                }
-            }
-        }
-        ArrayList<ArrayList<TreeNode>> results = new ArrayList<>();
-        results.add(similarInRMTree);
-        results.add(similarInAMTree);
-        System.out.println("These are the names of the companies found in both trees and their parents\n");
-        for (int i = 0; i < similarInRMTree.size(); i++) {
-            System.out.println((i + 1) + ": " + similarInRMTree.get(i).getName() + "\n\tParent in Risk Match Tree: " +
-                    similarInRMTree.get(i).getParentName() + "\n\tParent in AMBest Tree: " + similarInAMTree.get(i).getParentName() + "\n");
-        }
-        return results;
-    }
-
-    static ArrayList<List<String>> uniqueNodes(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
-
-        //Make collections and lists out of all the trees
-        Collection<String> fList = new ArrayList<>();
-        List<String> source = new ArrayList<>();
-        for (CompanyTree rmTree : rm) {
-            fList.addAll(rmTree.getCompanyNames());
-            source.addAll(rmTree.getCompanyNames());
-        }
-        Collection<String> sList = new ArrayList<>();
-        List<String> destination = new ArrayList<>();
-        for (CompanyTree amTree : ambest) {
-            sList.addAll(amTree.getCompanyNames());
-            destination.addAll(amTree.getCompanyNames());
-        }
-
-        //remove every thing that occurs in one list from the other
-        source.removeAll(sList);
-        destination.removeAll(fList);
-
-        //Print out in formatted way
-
-
-        String format = "%1$-100s%2$-100s\n";
-        System.out.format(format, "Only in Risk Match Tree", "Only in AM Best Tree");
-        System.out.format(format, "-----------------------", "--------------------");
-
-        try{
-            BufferedWriter writer = new BufferedWriter(new FileWriter("./unique"));
-            //writer.write(String.format("%1$-100s%2$-100s\n",' ', (i + ": " + two)));
-
-
-        for (int i = 0; i < source.size() || i < destination.size(); i++) {
-            //System.out.println(i);
-
-
-            if (i >= source.size() && destination.size() > i) {
-                String two = destination.get(i);
-                System.out.format(format, ' ', (i + ": " + two));
-                writer.write(String.format("%1$-100s%2$-100s\n",' ', (i + ": " + two)));
-            } else if (i < source.size() && i >= destination.size()) {
-                String one = source.get(i);
-                System.out.format(format, (i + ": " + one), ' ');
-                writer.write(String.format("%1$-100s%2$-100s\n", (i + ": " + one), ' '));
-            } else if(i < source.size() && i < destination.size()){
-                System.out.format(format, (i + ": " + source.get(i)), (i + ": " + destination.get(i)));
-                writer.write(String.format("%1$-100s%2$-100s\n",(i + ": " + source.get(i)), (i + ": " + destination.get(i))));
-            }
-        }
-        writer.close();
-        } catch (java.io.IOException e){
-            e.printStackTrace();
-        }
-
-        ArrayList<List<String>> result = new ArrayList<>();
-        result.add(source);
-        result.add(destination);
-
-        //System.out.format(format,source.size(),destination.size());
-        System.out.println(destination.size());
-        System.out.println(source.size());
-        return result;
-
-    }
-
-    static int compareSubtrees(TreeNode rm, TreeNode am) {
-        int D = 0;
-        if (rm.getName().equals(am.getName())) D++;
-
-        ArrayList<TreeNode> rmChildren = rm.getChildren();
-        ArrayList<TreeNode> amChildren = am.getChildren();
-        if (rm.getChildren().isEmpty() || am.getChildren().isEmpty()) {  //dont bother checking further if there arent any children
-            return D;
-        }
-        for (TreeNode node : rmChildren) {
-            for (TreeNode amnode : amChildren) {
-                if (node.getName().equals(amnode.getName())) {
-                    D += compareSubtrees(node, amnode);
-                }
-            }
-
-        }
-        return D;
-    }
-
-    static double Similarity(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
-        double sim = 0;
-        double N = 0;
-        for (CompanyTree rmTree : rm) {
-            N += rmTree.getSize();
-        }
-        for (CompanyTree amTree : ambest) {
-            N += amTree.getSize();
-        }
-        int i = 0;
-        System.out.println();
-        for (CompanyTree rmTree : rm) {
-            System.out.print("\r");
-            System.out.print("(" + (i++ + 1) + "/" + rm.size() + ") Checking similarities for tree: " +  rmTree.getRoot().getName());
-            for (CompanyTree amTree : ambest) {
-                double D = similarities(rmTree, amTree);
-                sim += (D / (N - D));
-            }
-        }
-        System.out.print("\r");
-        return sim;
-    }
-
-    static ArrayList<ArrayList<Long>> getAllTopLevelCompanies(Properties prop) {
-        ArrayList<Long> topLevelRMCompanies = new ArrayList<>();
-        ArrayList<Long> topLevelAMCompanies = new ArrayList<>();
-
-        //Run SQL Queries
-        try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/masterdb",
-                    prop.getProperty("username"), prop.getProperty("password"));
-            PreparedStatement pStatement = conn.prepareStatement("select COUNT(distinct name) as tree_size, ultimate_parent_amb_id from dom_am_best_carrier group by ultimate_parent_amb_id order by tree_size desc;");
-            ResultSet rs = pStatement.executeQuery();
-
-
-            while (rs.next()) {
-                if (rs.getInt("ultimate_parent_amb_id") != 0)
-                    topLevelAMCompanies.add(rs.getLong("ultimate_parent_amb_id"));
-            }
-
-            pStatement = conn.prepareStatement("select count(distinct name) as tree_size, top_level_company_id from dom_company group by top_level_company_id order by tree_size desc;");
-            rs = pStatement.executeQuery();
-
-            while (rs.next()) {
-                if (rs.getLong("top_level_company_id") != 0)
-                    topLevelRMCompanies.add(rs.getLong("top_level_company_id"));
-            }
-            conn.close();
-        } catch (SQLException sq) {
-            sq.printStackTrace();
-        }
-
-
-        //return sql query results
-        ArrayList<ArrayList<Long>> result = new ArrayList<>(2);
-        result.add(topLevelRMCompanies);
-        result.add(topLevelAMCompanies);
-        return result;
-    }
 
     public static void main(String[] args) {
 
@@ -451,7 +266,7 @@ public class driver {
         //System.out.println("Starting Similarity run");
         System.out.println();
 
-        System.out.println("Similarity: " + Similarity(rmTrees, amTrees));
+        System.out.println("Similarity: " + CompanyTree.Similarity(rmTrees, amTrees));
 
         System.out.println();
 

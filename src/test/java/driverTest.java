@@ -35,7 +35,7 @@ public class driverTest {
         forest2.get(0).printRecursive();
 
 
-        assertEquals(1.0, driver.Similarity(forest1, forest2), .001);
+        assertEquals(1.0, CompanyTree.Similarity(forest1, forest2), .001);
 
 
     }
@@ -69,7 +69,7 @@ public class driverTest {
         tree1.printRecursive();
         tree2.printRecursive();
 
-        assertEquals(0.75, driver.Similarity(forest1, forest2), 0.0);
+        assertEquals(0.75, CompanyTree.Similarity(forest1, forest2), 0.0);
 
     }
 
@@ -110,7 +110,7 @@ public class driverTest {
         tree2.printRecursive();
         tree3.printRecursive();
 
-        assertEquals(0.7, driver.Similarity(forest1, forest2), 0.01);
+        assertEquals(0.7, CompanyTree.Similarity(forest1, forest2), 0.01);
 
     }
 }
