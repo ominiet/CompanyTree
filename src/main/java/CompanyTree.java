@@ -15,6 +15,27 @@ public class CompanyTree {
         this.companyNames = new ArrayList<>();
     }
 
+    CompanyTree(ArrayList<TreeNode> nodes, long rootCode) {
+        this.unsorted = new ArrayList<>();
+        this.companyNames = new ArrayList<>();
+        //find root in list of nodes
+        boolean setRootFlag = false;
+        for (TreeNode node : nodes) {
+            if (rootCode == node.getId()) {
+                this.root = node;
+                setRootFlag = true;
+                break;
+            }
+        }
+        //create
+        if (!setRootFlag) {
+            this.root = new TreeNode(rootCode, Long.toString(rootCode), 0);
+        }
+
+        //perform all other operations we were doing before
+        BuildTree(nodes);
+    }
+
     int getSize() {
         return this.companyNames.size();
     }
@@ -32,14 +53,6 @@ public class CompanyTree {
     }
 
 
-    void printRecursive() {
-
-        String result1="";
-
-        System.out.println(printRecursive(root, 0, result1));
-
-
-    }
     void BuildTree(ArrayList<TreeNode> nodeList) {
         //System.out.println(nodeList.size());
         boolean placed;
@@ -77,6 +90,7 @@ public class CompanyTree {
         this.nodeList = nodeList;
         unsorted.sort(new NameComparator());
         Collections.sort(this.getCompanyNames());
+        reorderChildren();
 
     }
 
@@ -95,30 +109,43 @@ public class CompanyTree {
 
     }
 
+    @Override
+    public String toString() {
+        return printRecursive(root, 0, "");
+    }
+
+    void printRecursive() {
+
+        String result1 = "";
+
+        System.out.println(printRecursive(root, 0, result1));
+
+
+    }
+
     private String printRecursive(TreeNode node, int depth, String output) {
         int temp = depth;
 
-            while (temp > 0) {
+        while (temp > 0) {
 
-                if (temp == 1) {
-                    output+="|-";
-                }
-                else {
-                    output+="|";
-                }
+            if (temp == 1) {
+                output += "|-";
+            } else {
+                output += "|";
+            }
 
-                output+="\t";
-                temp--;
-            }
-            output+=node.getName();
-            if(node.getRole() != null){
-                output+= " - " + node.getRole();
-            }
-            output+="\n";
-            depth++;
+            output += "\t";
+            temp--;
+        }
+        output += node.getName();
+        if (node.getRole() != null) {
+            output += " - " + node.getRole();
+        }
+        output += "\n";
+        depth++;
         for (TreeNode child : node.getChildren()) {
 
-            output = printRecursive(child, depth,output);
+            output = printRecursive(child, depth, output);
         }
         return output;
     }
