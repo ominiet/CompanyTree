@@ -7,6 +7,7 @@ class TreeNode {
     private TreeNode parent;
     private ArrayList<TreeNode> children;
     private String role;
+    private CompanyTree tree;
 
     TreeNode(long id, String name, long parentId) {
         this.companyName = name;
@@ -15,6 +16,7 @@ class TreeNode {
         this.parentId = parentId;
         this.parent = null;
         this.role = null;
+        this.tree = null;
     }
 
     TreeNode(long id, String name, long parentId, String role) {
@@ -24,6 +26,7 @@ class TreeNode {
         this.parentId = parentId;
         this.parent = null;
         this.role = role;
+        this.tree = null;
     }
 
     TreeNode compareTo(TreeNode node) {
@@ -31,7 +34,10 @@ class TreeNode {
             return node;
         } else return null;
     }
-
+    @Override
+    public String toString(){
+        return (role != null) ? id + " " + companyName + " - " + role : id + " " + companyName;
+    }
 
     String getName() {
         return companyName;
@@ -56,11 +62,36 @@ class TreeNode {
 
     }
 
+    ArrayList<ArrayList<CompanyTree>> getRelatedTrees(ArrayList<CompanyTree> ambest){
+        ArrayList<ArrayList<CompanyTree>> results = new ArrayList<>();
+
+        results.add(new ArrayList<>());
+        results.add(new ArrayList<>());
+        results.get(0).add(this.getTree());
+
+        for (CompanyTree amTree: ambest) {
+            ArrayList<String> tempNodes = amTree.getCompanyNames();
+            for (TreeNode company : tree.getNodes()) {
+                if (tempNodes.contains(company.getName())){
+                    results.get(1).add(amTree);
+                    break;
+                }
+            }
+        }
+        return results;
+    }
+
     void setParent(TreeNode parent) {
         this.parent = parent;
     }
 
     String getRole() {
         return role;
+    }
+    void setTree(CompanyTree t){
+        this.tree = t;
+    }
+    CompanyTree getTree(){
+        return tree;
     }
 }

@@ -35,7 +35,7 @@ public class driverTest {
         forest2.get(0).printRecursive();
 
 
-        assertEquals(1.0, driver.Similarity(forest1, forest2), .001);
+        assertEquals(1.0, CompanyTree.Similarity(forest1, forest2), .001);
 
 
     }
@@ -69,7 +69,48 @@ public class driverTest {
         tree1.printRecursive();
         tree2.printRecursive();
 
-        assertEquals(0.75, driver.Similarity(forest1, forest2), 0.0);
+        assertEquals(0.75, CompanyTree.Similarity(forest1, forest2), 0.0);
+
+    }
+
+    @Test
+    public void oneTreeAgainstTwo() {
+
+        ArrayList<TreeNode> a = new ArrayList<>();
+        a.add(new TreeNode(1, "one", 1));
+        a.add(new TreeNode(2, "two", 1));
+
+
+        CompanyTree tree1 = new CompanyTree(a.get(0));
+        tree1.BuildTree(a);
+
+        CompanyTree tree2 = new CompanyTree(new TreeNode(3, "three", 3));
+        ArrayList<TreeNode> c = new ArrayList<>();
+        c.add(tree2.getRoot());
+        tree2.BuildTree(c);
+
+        ArrayList<TreeNode> b = new ArrayList<>();
+        b.add(new TreeNode(1, "one", 1));
+        b.add(new TreeNode(2, "two", 1));
+        b.add(new TreeNode(3, "three", 2));
+
+        CompanyTree tree3 = new CompanyTree(b.get(0));
+        tree3.BuildTree(b);
+
+
+        ArrayList<CompanyTree> forest1 = new ArrayList<>();
+
+
+        ArrayList<CompanyTree> forest2 = new ArrayList<>();
+        forest1.add(tree1);
+        forest1.add(tree2);
+        forest2.add(tree3);
+
+        tree1.printRecursive();
+        tree2.printRecursive();
+        tree3.printRecursive();
+
+        assertEquals(0.7, CompanyTree.Similarity(forest1, forest2), 0.01);
 
     }
 }
