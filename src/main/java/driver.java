@@ -87,8 +87,8 @@ public class driver {
 
 
     ///Search for an exact match of name string your set of risk match trees
-    private static void fuzzySearch(String search, ArrayList<CompanyTree> rm){
-
+    private static ArrayList<TreeNode> fuzzySearch(String search, ArrayList<CompanyTree> rm){
+        ArrayList<TreeNode> resultOptions = new ArrayList<>();
         FuzzyScore score = new FuzzyScore(Locale.ENGLISH);
 
         int mark = (int)((double)score.fuzzyScore(search, search) * .30);
@@ -113,8 +113,11 @@ public class driver {
         System.out.println();
         System.out.println(matches.size());
         for (FuzzyResult n : matches) {
-            System.out.println(n.getNode() + " " + n.getResult());
+            //System.out.println(n.getNode() + " " + n.getResult());
+            resultOptions.add(n.getNode());
         }
+
+        return resultOptions;
     }
 
 
@@ -193,7 +196,7 @@ public class driver {
 
                 TreeNode temp = new TreeNode(id, name, parentId,role);
                 CompanyTree tempTree = new CompanyTree(temp);
-                tempTree.BuildTree(new ArrayList<>(Arrays.asList(temp)));
+                tempTree.BuildTree(new ArrayList<>(Collections.singletonList(temp)));
 
                 rmTrees.add(tempTree);
 
@@ -261,7 +264,7 @@ public class driver {
 
                 TreeNode temp = new TreeNode(id, name, parentId);
                 CompanyTree tempTree = new CompanyTree(temp);
-                tempTree.BuildTree(new ArrayList<>(Arrays.asList(temp)));
+                tempTree.BuildTree(new ArrayList<>(Collections.singletonList(temp)));
 
                 amTrees.add(tempTree);
             }
@@ -290,12 +293,50 @@ public class driver {
 
         //fuzzySearch("indiana insurance company", rmTrees);
         Scanner in = new Scanner(System.in);
+        System.out.println("Entering fuzzy search mode. enter an integer");
         while(in.nextInt() != -1){
-
 
             System.out.println("Fuzzy Search");
             in.nextLine();
-            fuzzySearch(in.nextLine(), rmTrees);
+            ArrayList<TreeNode> options = fuzzySearch(in.nextLine(), rmTrees);
+
+            System.out.println("Here are your top " + options.size() + " results from your search:");
+
+            for(int i = 0; i < options.size(); i ++){
+                System.out.println((i + 1) + ": " + options.get(i));
+            }
+            System.out.println("\nEnter the number you would like to grab the trees for");
+
+            int choice = in.nextInt();
+            if(choice > 0 && choice  <= options.size()){
+
+                System.out.println("Getting Related Trees");
+                ArrayList<ArrayList<CompanyTree>> allRelatedTrees = options.get(choice - 1).getRelatedTrees(amTrees);
+                //options.get(choice - 1).getTree().printRecursive();
+                System.out.println("Number of Related Trees: " + allRelatedTrees.get(1).size());
+
+                System.out.println("AM Size: " + allRelatedTrees.get(0).get(0).getSize());
+                for (CompanyTree amTree : allRelatedTrees.get(1)){
+                    System.out.println(amTree.getSize());
+                }
+
+                System.out.println("Risk Match Trees:\n");
+                for (CompanyTree rmTree : allRelatedTrees.get(0)){
+                    System.out.println(rmTree.toString());
+                }
+                System.out.println("AM Best Trees:\n");
+                for (CompanyTree amTree : allRelatedTrees.get(1)){
+                    System.out.println(amTree.toString());
+                }
+                System.out.println("Checking Similarity");
+                System.out.println("Similarity " + CompanyTree.Similarity(allRelatedTrees.get(0), allRelatedTrees.get(1)));
+
+                System.out.println("Similar Nodes: ");
+                CompanyTree.similarNodes(allRelatedTrees.get(0), allRelatedTrees.get(1) );
+
+                System.out.println("Unique Nodes: ");
+                CompanyTree.uniqueNodes(allRelatedTrees.get(0), allRelatedTrees.get(1));
+            }
         }
 
 
@@ -328,11 +369,10 @@ class FuzzyResult{
         this.node = node;
     }
 
-    public int getResult() {
+    int getResult() {
         return result;
     }
-    public TreeNode getNode(){
+    TreeNode getNode(){
         return node;
     }
 }
-

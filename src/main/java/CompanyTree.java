@@ -157,7 +157,7 @@ public class CompanyTree {
         return output;
     }
 
-     public static ArrayList<ArrayList<TreeNode>> similarNodes(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
+    public static ArrayList<ArrayList<TreeNode>> similarNodes(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
         ArrayList<TreeNode> similarInRMTree = new ArrayList<>();
         ArrayList<TreeNode> similarInAMTree = new ArrayList<>();
 
@@ -342,6 +342,7 @@ public class CompanyTree {
         }
         return D;
     }
+
 
 }
 

@@ -62,6 +62,25 @@ class TreeNode {
 
     }
 
+    ArrayList<ArrayList<CompanyTree>> getRelatedTrees(ArrayList<CompanyTree> ambest){
+        ArrayList<ArrayList<CompanyTree>> results = new ArrayList<>();
+
+        results.add(new ArrayList<>());
+        results.add(new ArrayList<>());
+        results.get(0).add(this.getTree());
+
+        for (CompanyTree amTree: ambest) {
+            ArrayList<String> tempNodes = amTree.getCompanyNames();
+            for (TreeNode company : tree.getNodes()) {
+                if (tempNodes.contains(company.getName())){
+                    results.get(1).add(amTree);
+                    break;
+                }
+            }
+        }
+        return results;
+    }
+
     void setParent(TreeNode parent) {
         this.parent = parent;
     }
