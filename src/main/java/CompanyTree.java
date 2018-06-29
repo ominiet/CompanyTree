@@ -2,23 +2,28 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.*;
 
-
 public class CompanyTree {
-
     private TreeNode root;
-    private ArrayList<TreeNode> unsorted;
     private ArrayList<TreeNode> nodeList;
     private ArrayList<String> companyNames;
 
-
+    /**
+     *
+     * @param start A complete Tree Node representative of the root of the Tree
+     */
     CompanyTree(TreeNode start) {
         this.root = start;
-        this.unsorted = new ArrayList<>();
+
         this.companyNames = new ArrayList<>();
     }
 
+    /**
+     *
+     * @param nodes The set of Tree Nodes in the tree
+     * @param rootCode The code of the top level company. This determines the root of the tree
+     */
     CompanyTree(ArrayList<TreeNode> nodes, long rootCode) {
-        this.unsorted = new ArrayList<>();
+
         this.companyNames = new ArrayList<>();
         //find root in list of nodes
         boolean setRootFlag = false;
@@ -39,22 +44,23 @@ public class CompanyTree {
         BuildTree(nodes);
     }
 
-    int getSize() {
-        return this.companyNames.size();
+    @Override
+    public String toString() {
+        return printRecursive(root, 0, "");
     }
 
+    private int getSize() {
+        return this.companyNames.size();
+    }
     ArrayList<String> getCompanyNames() {
         return companyNames;
     }
-
     TreeNode getRoot() {
         return root;
     }
-
     ArrayList<TreeNode> getNodes() {
         return nodeList;
     }
-
 
     void BuildTree(ArrayList<TreeNode> nodeList) {
         //System.out.println(nodeList.size());
@@ -93,18 +99,15 @@ public class CompanyTree {
             //System.out.println();
         }
         this.nodeList = nodeList;
-        unsorted.sort(new NameComparator());
         Collections.sort(this.getCompanyNames());
         reorderChildren();
 
     }
 
-
     void reorderChildren() {
         reorderChildren(this.root);
 
     }
-
     private void reorderChildren(TreeNode node) {
         node.getChildren().sort(new NameComparator());
         for (TreeNode child : node.getChildren()) {
@@ -112,11 +115,6 @@ public class CompanyTree {
             reorderChildren(child);
         }
 
-    }
-
-    @Override
-    public String toString() {
-        return printRecursive(root, 0, "");
     }
 
     void printRecursive() {
@@ -127,7 +125,6 @@ public class CompanyTree {
 
 
     }
-
     private String printRecursive(TreeNode node, int depth, String output) {
         int temp = depth;
 
@@ -161,8 +158,6 @@ public class CompanyTree {
         ArrayList<TreeNode> similarInRMTree = new ArrayList<>();
         ArrayList<TreeNode> similarInAMTree = new ArrayList<>();
 
-        //TODO: this currently has m*n*o*p time complexity. See if there is another workaround
-        int x = 0;
         for (CompanyTree rmTree : rm) {
             //System.out.println("Checking Risk Match Tree (" + x++ + "/" + rm.size() + ")");
             for (CompanyTree amTree : ambest) {
@@ -187,7 +182,6 @@ public class CompanyTree {
         }
         return results;
     }
-
     public static ArrayList<List<String>> uniqueNodes(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
 
         //Make collections and lists out of all the trees
@@ -226,15 +220,15 @@ public class CompanyTree {
 
                 if (i >= source.size() && destination.size() > i) {
                     String two = destination.get(i);
-                    System.out.format(format, ' ', (i + ": " + two));
-                    writer.write(String.format("%1$-100s%2$-100s\n",' ', (i + ": " + two)));
+                    System.out.format(format, ' ', ((i + 1)+ ": " + two));
+                    writer.write(String.format("%1$-100s%2$-100s\n",' ', ((i +1) + ": " + two)));
                 } else if (i < source.size() && i >= destination.size()) {
                     String one = source.get(i);
-                    System.out.format(format, (i + ": " + one), ' ');
-                    writer.write(String.format("%1$-100s%2$-100s\n", (i + ": " + one), ' '));
+                    System.out.format(format, ((i + 1) + ": " + one), ' ');
+                    writer.write(String.format("%1$-100s%2$-100s\n", ((i + 1) + ": " + one), ' '));
                 } else if(i < source.size() && i < destination.size()){
-                    System.out.format(format, (i + ": " + source.get(i)), (i + ": " + destination.get(i)));
-                    writer.write(String.format("%1$-100s%2$-100s\n",(i + ": " + source.get(i)), (i + ": " + destination.get(i))));
+                    System.out.format(format, ((i + 1)  + ": " + source.get(i)), ((i + 1) + ": " + destination.get(i)));
+                    writer.write(String.format("%1$-100s%2$-100s\n",((i + 1) + ": " + source.get(i)), ((i + 1) + ": " + destination.get(i))));
                 }
             }
             writer.close();
@@ -247,8 +241,6 @@ public class CompanyTree {
         result.add(destination);
 
         //System.out.format(format,source.size(),destination.size());
-        System.out.println(destination.size());
-        System.out.println(source.size());
         return result;
 
     }
@@ -275,7 +267,6 @@ public class CompanyTree {
         System.out.print("\r");
         return sim;
     }
-
     private static int similarities(CompanyTree rm, CompanyTree ambest) {
         Queue<TreeNode> queue = new LinkedList<>();
 
@@ -322,7 +313,6 @@ public class CompanyTree {
         }
         return D;
     }
-
     private static int compareSubtrees(TreeNode rm, TreeNode am) {
         int D = 0;
         if (rm.getName().equals(am.getName())) D++;
@@ -342,8 +332,6 @@ public class CompanyTree {
         }
         return D;
     }
-
-
 }
 
 //Allows children and unsorted ArrayLists to be ordered lexically
