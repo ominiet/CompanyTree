@@ -8,7 +8,6 @@ public class CompanyTree {
     private ArrayList<String> companyNames;
 
     /**
-     *
      * @param start A complete Tree Node representative of the root of the Tree
      */
     CompanyTree(TreeNode start) {
@@ -18,8 +17,7 @@ public class CompanyTree {
     }
 
     /**
-     *
-     * @param nodes The set of Tree Nodes in the tree
+     * @param nodes    The set of Tree Nodes in the tree
      * @param rootCode The code of the top level company. This determines the root of the tree
      */
     CompanyTree(ArrayList<TreeNode> nodes, long rootCode) {
@@ -52,12 +50,15 @@ public class CompanyTree {
     private int getSize() {
         return this.companyNames.size();
     }
+
     ArrayList<String> getCompanyNames() {
         return companyNames;
     }
+
     TreeNode getRoot() {
         return root;
     }
+
     ArrayList<TreeNode> getNodes() {
         return nodeList;
     }
@@ -108,6 +109,7 @@ public class CompanyTree {
         reorderChildren(this.root);
 
     }
+
     private void reorderChildren(TreeNode node) {
         node.getChildren().sort(new NameComparator());
         for (TreeNode child : node.getChildren()) {
@@ -125,6 +127,7 @@ public class CompanyTree {
 
 
     }
+
     private String printRecursive(TreeNode node, int depth, String output) {
         int temp = depth;
 
@@ -154,7 +157,13 @@ public class CompanyTree {
         return output;
     }
 
-    public static ArrayList<ArrayList<TreeNode>> similarNodes(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
+    /**
+     * @param rm     Array list of Company Trees built from Risk Match Table
+     * @param ambest Array list of Company Trees built from AM Best Table
+     *
+     * @return Array List of nodes that appear in both lists of trees
+     */
+    static ArrayList<ArrayList<TreeNode>> similarNodes(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
         ArrayList<TreeNode> similarInRMTree = new ArrayList<>();
         ArrayList<TreeNode> similarInAMTree = new ArrayList<>();
 
@@ -175,14 +184,19 @@ public class CompanyTree {
         ArrayList<ArrayList<TreeNode>> results = new ArrayList<>();
         results.add(similarInRMTree);
         results.add(similarInAMTree);
-        System.out.println("These are the names of the companies found in both trees and their parents\n");
-        for (int i = 0; i < similarInRMTree.size(); i++) {
-            System.out.println((i + 1) + ": " + similarInRMTree.get(i).getName() + "\n\tParent in Risk Match Tree: " +
-                    similarInRMTree.get(i).getParentName() + "\n\tParent in AMBest Tree: " + similarInAMTree.get(i).getParentName() + "\n");
-        }
+
         return results;
     }
-    public static ArrayList<List<String>> uniqueNodes(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
+    static void printSimilarNodes(ArrayList<ArrayList<TreeNode>> results) {
+        System.out.println("These are the names of the companies found in both trees and their parents\n");
+
+        for (int i = 0; i < results.get(0).size(); i++) {
+            System.out.println((i + 1) + ": " + results.get(0).get(i).getName() + "\n\tParent in Risk Match Tree: " +
+                    results.get(0).get(i).getParentName() + "\n\tParent in AMBest Tree: " + results.get(1).get(i).getParentName() + "\n");
+        }
+    }
+
+    static ArrayList<List<String>> uniqueNodes(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
 
         //Make collections and lists out of all the trees
         Collection<String> fList = new ArrayList<>();
@@ -208,44 +222,27 @@ public class CompanyTree {
         String format = "%1$-100s%2$-100s\n";
         System.out.format(format, "Only in Risk Match Tree", "Only in AM Best Tree");
         System.out.format(format, "-----------------------", "--------------------");
+        for (int i = 0; i < source.size() || i < destination.size(); i++) {
 
-        try{
-            BufferedWriter writer = new BufferedWriter(new FileWriter("./unique"));
-            //writer.write(String.format("%1$-100s%2$-100s\n",' ', (i + ": " + two)));
-
-
-            for (int i = 0; i < source.size() || i < destination.size(); i++) {
-                //System.out.println(i);
-
-
-                if (i >= source.size() && destination.size() > i) {
-                    String two = destination.get(i);
-                    System.out.format(format, ' ', ((i + 1)+ ": " + two));
-                    writer.write(String.format("%1$-100s%2$-100s\n",' ', ((i +1) + ": " + two)));
-                } else if (i < source.size() && i >= destination.size()) {
-                    String one = source.get(i);
-                    System.out.format(format, ((i + 1) + ": " + one), ' ');
-                    writer.write(String.format("%1$-100s%2$-100s\n", ((i + 1) + ": " + one), ' '));
-                } else if(i < source.size() && i < destination.size()){
-                    System.out.format(format, ((i + 1)  + ": " + source.get(i)), ((i + 1) + ": " + destination.get(i)));
-                    writer.write(String.format("%1$-100s%2$-100s\n",((i + 1) + ": " + source.get(i)), ((i + 1) + ": " + destination.get(i))));
-                }
+            if (i >= source.size() && destination.size() > i) {
+                String two = destination.get(i);
+                System.out.format(format, ' ', ((i + 1) + ": " + two));
+            } else if (i < source.size() && i >= destination.size()) {
+                String one = source.get(i);
+                System.out.format(format, ((i + 1) + ": " + one), ' ');
+            } else if (i < source.size() && i < destination.size()) {
+                System.out.format(format, ((i + 1) + ": " + source.get(i)), ((i + 1) + ": " + destination.get(i)));
             }
-            writer.close();
-        } catch (java.io.IOException e){
-            e.printStackTrace();
         }
-
         ArrayList<List<String>> result = new ArrayList<>();
         result.add(source);
         result.add(destination);
 
-        //System.out.format(format,source.size(),destination.size());
         return result;
 
     }
 
-    public static double Similarity(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
+    static double Similarity(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
         double sim = 0;
         double N = 0;
         for (CompanyTree rmTree : rm) {
@@ -258,7 +255,7 @@ public class CompanyTree {
         System.out.println();
         for (CompanyTree rmTree : rm) {
             System.out.print("\r");
-            System.out.print("(" + (i++ + 1) + "/" + rm.size() + ") Checking similarities for tree: " +  rmTree.getRoot().getName());
+            System.out.print("(" + (i++ + 1) + "/" + rm.size() + ") Checking similarities for tree: " + rmTree.getRoot().getName());
             for (CompanyTree amTree : ambest) {
                 double D = similarities(rmTree, amTree);
                 sim += (D / (N - D));
@@ -267,6 +264,7 @@ public class CompanyTree {
         System.out.print("\r");
         return sim;
     }
+
     private static int similarities(CompanyTree rm, CompanyTree ambest) {
         Queue<TreeNode> queue = new LinkedList<>();
 
@@ -292,27 +290,23 @@ public class CompanyTree {
             while (!queue2.isEmpty()) {
                 //take first item in the queue
                 TreeNode next2 = queue2.remove();
-                if (next.compareTo(next2) != null){
+                if (next.compareTo(next2) != null) {
 
                     isFoundFlag = true;
                     D += compareSubtrees(next, next2);
                     queue.clear();
                     break;
                 }
-
-                for (TreeNode child : next2.getChildren()){
-                    queue2.add(child);
-                }
+                queue2.addAll(next2.getChildren());
             }
-            if(!isFoundFlag){
-                for (TreeNode node : next.getChildren()){
-                    queue.add(node);
-                }
+            if (!isFoundFlag) {
+                queue.addAll(next.getChildren());
             }
 
         }
         return D;
     }
+
     private static int compareSubtrees(TreeNode rm, TreeNode am) {
         int D = 0;
         if (rm.getName().equals(am.getName())) D++;
@@ -341,9 +335,3 @@ class NameComparator implements Comparator<TreeNode> {
         return o1.getName().compareToIgnoreCase(o2.getName());
     }
 }
-
-
-
-
-
-

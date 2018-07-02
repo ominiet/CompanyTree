@@ -282,8 +282,6 @@ public class Driver {
                     break;
             }
 
-
-
             if(opt == Option.PRINT) {
                 System.out.println("Risk Match Trees\n-------------------");
                 for (CompanyTree t : workingSet.get(0)) {
@@ -323,7 +321,7 @@ public class Driver {
                 System.out.println("Similarity: " + CompanyTree.Similarity(workingSet.get(0), workingSet.get(1)));
             }
             else if(opt == Option.SIMILAR){
-                CompanyTree.similarNodes(workingSet.get(0), workingSet.get(1) );
+                CompanyTree.printSimilarNodes(CompanyTree.similarNodes(workingSet.get(0), workingSet.get(1)));
             }
             else if(opt == Option.DIFFERENT){
                 CompanyTree.uniqueNodes(workingSet.get(0), workingSet.get(1));
