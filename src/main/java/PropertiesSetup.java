@@ -1,20 +1,18 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Properties;
 import java.util.Scanner;
 
 public class PropertiesSetup {
-    public static void main(String[] args){
+
+
+    static Properties createProperties(File f){
         Properties prop = new Properties();
         OutputStream output = null;
         Scanner input = new Scanner(System.in);
-        File file;
         try{
-            file = new File("./Props/config.properties");
-            file.createNewFile();
-            output = new FileOutputStream(file);
+            //file = new File("./Props/config.properties");
+            //file.createNewFile();
+            output = new FileOutputStream(f/*ile*/);
             System.out.println("Enter your database username");
             String props = input.next();
             prop.setProperty("username", props);
@@ -23,6 +21,8 @@ public class PropertiesSetup {
             prop.setProperty("password", props);
 
             prop.store(output,null);
+
+
         }catch(Exception e){
             e.printStackTrace();
         }   finally {
@@ -34,7 +34,13 @@ public class PropertiesSetup {
                 }
             }
         }
-        System.exit(0);
+        return prop;
     }
+    static Properties readProperties(File f) throws IOException{
+        Properties prop = new Properties();
 
+        InputStream input = new FileInputStream(f);
+        prop.load(input);
+        return prop;
+    }
 }

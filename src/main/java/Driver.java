@@ -1,5 +1,6 @@
 import org.apache.commons.text.similarity.FuzzyScore;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,12 +111,27 @@ public class Driver {
 
         Properties prop = new Properties();
         InputStream input;
+
+        File file = new File("./Props/config.properties");
+
         try {
+            if(file.getParentFile().mkdirs()){
+                System.out.println("Making Props directory");
+            }
 
-            //get values from properties.configuration
-            input = new FileInputStream("./Props/config.properties");
-            prop.load(input);
-
+            if (file.createNewFile()){
+                System.out.println("True");
+                prop = PropertiesSetup.createProperties(file);
+            }
+            else {
+                //get values from properties.configuration
+                prop = PropertiesSetup.readProperties(file);
+            }
+        }catch (IOException e){
+            System.out.println("error from this try block");
+            e.printStackTrace();
+        }
+        try {
             //get all top level names
             ArrayList<ArrayList<Long>> topLevelCompanyCodes = getAllTopLevelCompanies(prop);
 
@@ -218,11 +234,11 @@ public class Driver {
                 amTrees.add(tempTree);
             }
 
-        } catch (IOException | NumberFormatException e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (SQLException ex) {
             // handle any errors
-            System.out.println("I'm and Error");
+            System.out.println("I'm an Error");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
