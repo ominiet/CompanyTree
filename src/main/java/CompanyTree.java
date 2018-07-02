@@ -3,6 +3,11 @@ import java.io.FileWriter;
 import java.util.*;
 
 public class CompanyTree {
+    //colors for changing output
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String RESET = "\u001B[0m";
+
     private TreeNode root;
     private ArrayList<TreeNode> nodeList;
     private ArrayList<String> companyNames;
@@ -191,9 +196,13 @@ public class CompanyTree {
         System.out.println("These are the names of the companies found in both trees and their parents\n");
 
         for (int i = 0; i < results.get(0).size(); i++) {
+            if(results.get(0).get(i).getParentName().equals(results.get(1).get(i).getParentName()))
+                System.out.print(GREEN);
+            else System.out.print(RED);
             System.out.println((i + 1) + ": " + results.get(0).get(i).getName() + "\n\tParent in Risk Match Tree: " +
                     results.get(0).get(i).getParentName() + "\n\tParent in AMBest Tree: " + results.get(1).get(i).getParentName() + "\n");
         }
+        System.out.println(RESET);
     }
 
     static ArrayList<List<String>> uniqueNodes(ArrayList<CompanyTree> rm, ArrayList<CompanyTree> ambest) {
