@@ -7,7 +7,11 @@ import java.sql.*;
 import java.util.*;
 
 
-public class driver {
+public class Driver {
+    public enum Option{
+        SEARCH, SIMILARITY, SIMILAR, DIFFERENT, PRINT, EXIT, CLEAR
+    }
+
     /**
      *
      * @param prop Properties object containing database username and password
@@ -50,7 +54,12 @@ public class driver {
         return result;
     }
 
-    ///Search for an exact match of name string your set of risk match trees
+    /**
+     * Search for the 20 closest results to the string in the given set of trees
+     * @param search The key term you are searching for
+     * @param rm The set of trees to be searched
+     * @return The top 20 closest matches returned by the fuzzy search
+     */
     private static ArrayList<TreeNode> fuzzySearch(String search, ArrayList<CompanyTree> rm){
         ArrayList<TreeNode> resultOptions = new ArrayList<>();
         FuzzyScore score = new FuzzyScore(Locale.ENGLISH);
@@ -81,8 +90,17 @@ public class driver {
         return resultOptions;
     }
 
+    private static void printMenu(){
+        System.out.println("-----------------");
+        System.out.println("1. Print - Print the trees in the working set");
+        System.out.println("2. Search - Search from the list RiskMatch Trees and create a new working set ");
+        System.out.println("3. Similarity - Compare the trees in the working set and see how similar they are");
+        System.out.println("4. Similar Nodes - Compare the trees in the working set and find the nodes which appear in both sets");
+        System.out.println("5. Different Nodes - Compare the trees in the working set and find the nodes which appear in one set of trees but not the other");
+        System.out.println("6. Clear Working Set - Reset the working set to include all AM Best and Risk Match trees");
+        System.out.println("7. Exit - exit the program");
 
-
+    }
 
     public static void main(String[] args) {
 
@@ -211,84 +229,114 @@ public class driver {
             System.out.println("------");
         }
 
-//        for (CompanyTree t : rmTrees) {
-//            System.out.println();
-//            t.printRecursive();
-//        }
-
-//        for (CompanyTree t: amTrees){
-//            System.out.println();
-//            t.printRecursive();
-//
-//        }
-
+        System.out.println("Done Building. Beginning interactive mode");
         Scanner in = new Scanner(System.in);
-        System.out.println("Entering fuzzy search mode. enter an integer");
-        while(in.nextInt() != -1){
 
-            System.out.println("Fuzzy Search");
-            in.nextLine();
-            ArrayList<TreeNode> options = fuzzySearch(in.nextLine(), rmTrees);
 
-            System.out.println("Here are your top " + options.size() + " results from your search:\n");
+        //This will be the lists you are currently working with. Preserves original set of Trees
+        ArrayList<ArrayList<CompanyTree>> workingSet = new ArrayList<>(Arrays.asList(rmTrees,amTrees));
 
-            for(int i = 0; i < options.size(); i ++){
-                System.out.println((i + 1) + ": " + options.get(i));
+
+
+        boolean run = true;
+        Option opt = Option.PRINT;
+        while(run) {
+            System.out.println("Working Set:\n\tRisk Match Trees: " + workingSet.get(0).size() + "\n\tAM Best Trees: " + workingSet.get(1).size() + "\n");
+            System.out.println("Select an operation to perform");
+            printMenu();
+
+            //get valid input
+            int selection = 0;
+            while (selection < 1 || selection > 7){
+                if(in.hasNextInt()){
+                    selection = in.nextInt();
+                }
+                else {
+                    System.out.println("Invalid input");
+                    in.next();
+                }
             }
-            System.out.println("\nEnter the number you would like to grab the trees for");
 
-            int choice = in.nextInt();
-            if(choice > 0 && choice  <= options.size()){
 
-                System.out.println("Getting Related Trees");
-                ArrayList<ArrayList<CompanyTree>> allRelatedTrees = options.get(choice - 1).betterGetRelatedTrees(rmTrees, amTrees);
-                //options.get(choice - 1).getTree().printRecursive();
-                System.out.println("Number of Related RM Trees: " + allRelatedTrees.get(0).size());
-                System.out.println("Number of Related AM Trees: " + allRelatedTrees.get(1).size() + "\n");
+            switch (selection){
+                case 1:
+                    opt = Option.PRINT;
+                    break;
+                case 2:
+                    opt = Option.SEARCH;
+                    break;
+                case 3:
+                    opt = Option.SIMILARITY;
+                    break;
+                case 4:
+                    opt = Option.SIMILAR;
+                    break;
+                case 5:
+                    opt = Option.DIFFERENT;
+                    break;
+                case 6:
+                    opt = Option.CLEAR;
+                    break;
+                case 7:
+                    opt = Option.EXIT;
+                    break;
+            }
 
-                //System.out.println("AM Size: " + allRelatedTrees.get(0).get(0).getSize());
 
-//                for (CompanyTree amTree : allRelatedTrees.get(1)){
-//                    System.out.println(amTree.getSize());
-//                }
 
-                System.out.println("Risk Match Trees:\n");
-                for (CompanyTree rmTree : allRelatedTrees.get(0)){
-                    System.out.println(rmTree.toString());
+            if(opt == Option.PRINT) {
+                System.out.println("Risk Match Trees\n-------------------");
+                for (CompanyTree t : workingSet.get(0)) {
+                    System.out.println();
+                    t.printRecursive();
                 }
-                System.out.println("AM Best Trees:\n");
-                for (CompanyTree amTree : allRelatedTrees.get(1)){
-                    System.out.println(amTree.toString());
+                System.out.println("AM Best Match Trees\n-------------------");
+                for (CompanyTree t: workingSet.get(1)){
+                    System.out.println();
+                    t.printRecursive();
+
                 }
-                System.out.println("Checking Similarity");
-                System.out.println("Similarity " + CompanyTree.Similarity(allRelatedTrees.get(0), allRelatedTrees.get(1)));
-//
-//               System.out.println("Similar Nodes: ");
-//                CompanyTree.similarNodes(allRelatedTrees.get(0), allRelatedTrees.get(1) );
-//
-                System.out.println("Unique Nodes: ");
-                CompanyTree.uniqueNodes(allRelatedTrees.get(0), allRelatedTrees.get(1));
+            }
+            else if(opt == Option.SEARCH){
+                System.out.println("Fuzzy Search");
+                in.nextLine();
+                ArrayList<TreeNode> options = fuzzySearch(in.nextLine(), rmTrees);
+
+                System.out.println("Here are your top " + options.size() + " results from your search:\n");
+
+                for(int i = 0; i < options.size(); i ++){
+                    System.out.println((i + 1) + ": " + options.get(i));
+                }
+                System.out.println("\nEnter the number you would like to grab the trees for");
+
+                int choice = in.nextInt();
+                if(choice > 0 && choice  <= options.size()){
+
+                    System.out.println("Getting Related Trees");
+                    workingSet = options.get(choice - 1).betterGetRelatedTrees(rmTrees, amTrees);
+                    //options.get(choice - 1).getTree().printRecursive();
+                    System.out.println("Number of Related RM Trees: " + workingSet.get(0).size());
+                    System.out.println("Number of Related AM Trees: " + workingSet.get(1).size() + "\n");
+                }
+            }
+            else if(opt == Option.SIMILARITY){
+                System.out.println("Similarity: " + CompanyTree.Similarity(workingSet.get(0), workingSet.get(1)));
+            }
+            else if(opt == Option.SIMILAR){
+                CompanyTree.similarNodes(workingSet.get(0), workingSet.get(1) );
+            }
+            else if(opt == Option.DIFFERENT){
+                CompanyTree.uniqueNodes(workingSet.get(0), workingSet.get(1));
+            }
+            else if(opt == Option.CLEAR){
+                workingSet.set(0, rmTrees);
+                workingSet.set(1, amTrees);
+            }
+            else if(opt == Option.EXIT){
+                System.out.println("Exiting");
+                run =  false;
             }
         }
-
-
-        //find unique nodes for the two sets of trees
-        //System.out.println();
-        //uniqueNodes(rmTrees, amTrees);
-
-        //System.out.println("Starting Similarity run");
-
-
-        //System.out.println("Similarity: " + CompanyTree.Similarity(rmTrees, amTrees));
-
-
-
-
-
-        //System.out.println(rmTrees.size());
-        //System.out.println(amTrees.size());
-        //System.out.println("Similar Names: " + similarNodes(rmTrees,amTrees));
-        //System.out.println("Size of similar Nodes: " + similarNodes(rmTrees,amTrees).get(0).size());
         System.exit(0);
     }
 }
