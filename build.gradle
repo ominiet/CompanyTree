@@ -17,4 +17,4 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-text', version: '1.4'
 }
 
-mainClassName="driver"
+mainClassName="Driver"
