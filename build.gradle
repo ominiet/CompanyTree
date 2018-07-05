@@ -17,4 +17,8 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-text', version: '1.4'
 }
 
+run {
+    standardInput = System.in
+}
+
 mainClassName="Driver"
