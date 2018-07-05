@@ -110,7 +110,6 @@ public class Driver {
         Connection conn;
 
         Properties prop = new Properties();
-        InputStream input;
 
         File file = new File("./Props/config.properties");
 
