@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class PropertiesSetup {
 
-
     static Properties createProperties(File f){
         Properties prop = new Properties();
         OutputStream output = null;
