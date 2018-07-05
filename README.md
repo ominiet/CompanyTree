@@ -13,7 +13,7 @@ Setup
 `./gradle build`
 
 2. Run the application using  
-`./gradlew run `
+`./gradlew run -q `
 
 ### How to use ###
 1. The program will build all the trees using information from the database
