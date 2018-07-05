@@ -4,9 +4,9 @@ import java.util.*;
 
 public class CompanyTree {
     //colors for changing output
-    public static final String RED = "\u001B[31m";
-    public static final String GREEN = "\u001B[32m";
-    public static final String RESET = "\u001B[0m";
+    private static final String RED = "\u001B[31m";
+    private static final String GREEN = "\u001B[32m";
+    private static final String RESET = "\u001B[0m";
 
     private TreeNode root;
     private ArrayList<TreeNode> nodeList;
